@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<phpunit bootstrap="./Tests/bootstrap.php" colors="true">
+<phpunit bootstrap="./src/BCC/EnumerableUtility/Tests/bootstrap.php" colors="true">
 
     <testsuites>
         <testsuite name="BCCEnumerableUtility test suite">
-            <directory suffix="Test.php">./Tests</directory>
+            <directory suffix="Test.php">./src/BCC/EnumerableUtility/Tests</directory>
         </testsuite>
     </testsuites>
 
