@@ -1,0 +1,21 @@
+{
+    "name": "bcc/enumerable-utility",
+    "type": "library",
+    "description": "Provides easy manipulation of array, string, and enumerables",
+    "keywords": ["string array enumerable"],
+    "homepage": "http://github.com/michelsalib/BCCEnumerableUtility",
+    "authors": [
+        {
+            "name": "Michel Salib",
+            "email": "michelsalib@hotmail.com",
+            "homepage": "http://www.michelsalib.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.4"
+    },
+    "autoload": {
+        "psr-0": { "BCC\\EnumerableUtility": "src/BCC/EnumerableUtility" }
+    },
+    "target-dir": "BCC/EnumerableUtility"
+}
