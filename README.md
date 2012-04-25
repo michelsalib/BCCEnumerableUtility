@@ -13,7 +13,7 @@ The enumerable utility library provides an easy way to manipulate enumerables. T
 
 It takes inspiration from the Linq Enumerable class extension of the .NET framework.
 
-##Instalation
+##Installation
 
 You will need to run under PHP 5.4.
 
