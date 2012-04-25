@@ -1,6 +1,6 @@
 #Readme
 
-[![Build Status](https://secure.travis-ci.org/michelsalib/BCCEnumerationUtility.png?branch=master)](http://travis-ci.org/michelsalib/BCCEnumerationUtility)
+[![Build Status](https://secure.travis-ci.org/michelsalib/BCCEnumerableUtility.png?branch=master)](http://travis-ci.org/michelsalib/BCCEnumerableUtility)
 
 ##Enumerable Utility
 
