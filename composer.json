@@ -17,5 +17,5 @@
     "autoload": {
         "psr-0": { "BCC\\EnumerableUtility": "src/" }
     },
-    "target-dir": "BCC/EnumerableUtility"
+    "target-dir": ""
 }
