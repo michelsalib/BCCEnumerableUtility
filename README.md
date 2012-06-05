@@ -94,6 +94,8 @@ Here is the list of the current implemented functions:
 - sum: Computes the sum of the elements, a closure might be used
 - take: Takes a number ok elements
 - takeWhile: Takes elements while a closure is satisfied
+- thenBy: Appends sub order, a closure might be used
+- thenByDescending: Appends sub descending order, a closure might be used
 - where: Reduces the set of elements using a closure
 
 Note that the functions returns an instance of the calling class when applicable.

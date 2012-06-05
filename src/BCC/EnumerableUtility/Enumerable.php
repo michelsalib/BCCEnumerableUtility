@@ -4,6 +4,10 @@ namespace BCC\EnumerableUtility;
 
 trait Enumerable
 {
+    protected $orderSequence = array();
+    protected $orderAscending  = true;
+    protected $orderDescending = false;
+
     public abstract function toArray();
 
     public function aggregate($func)
@@ -162,42 +166,20 @@ trait Enumerable
      */
     public function orderBy($func = null)
     {
-        $sort = array();
-        $result = array();
-        $class = __CLASS__;
         $func = $func ?: function ($item) { return $item; };
 
-        foreach ($this->toArray() as $item) {
-            $sort[$func($item)][] = $item;
-        }
-
-        \ksort($sort);
-
-        foreach ($sort as $item) {
-            $result = \array_merge($result, $item);
-        }
-
-        return new $class($result);
+        return $this->order(array(array('order' => $this->orderAscending, 'func' => $func)));
     }
 
+    /**
+     * @param null $func
+     * @return Enumerable
+     */
     public function orderByDescending($func = null)
     {
-        $sort = array();
-        $result = array();
-        $class = __CLASS__;
         $func = $func ?: function ($item) { return $item; };
 
-        foreach ($this->toArray() as $item) {
-            $sort[$func($item)][] = $item;
-        }
-
-        \krsort($sort);
-
-        foreach ($sort as $item) {
-            $result = \array_merge($result, $item);
-        }
-
-        return new $class($result);
+        return $this->order(array(array('order' => $this->orderDescending, 'func' => $func)));
     }
 
     /**
@@ -295,6 +277,32 @@ trait Enumerable
     }
 
     /**
+     * @param null $func
+     * @return Enumerable
+     */
+    public function thenBy($func = null)
+    {
+        $func = $func ?: function ($item) { return $item; };
+        $sequence = $this->orderSequence;
+        $sequence[] = array('order' => $this->orderAscending, 'func' => $func);
+
+        return $this->order($sequence);
+    }
+
+    /**
+     * @param null $func
+     * @return Enumerable
+     */
+    public function thenByDescending($func = null)
+    {
+        $func = $func ?: function ($item) { return $item; };
+        $sequence = $this->orderSequence;
+        $sequence[] = array('order' => $this->orderDescending, 'func' => $func);
+
+        return $this->order($sequence);
+    }
+
+    /**
      * @param $count
      * @return Enumerable
      */
@@ -310,5 +318,35 @@ trait Enumerable
         }
 
         return new $class($result);
+    }
+
+    protected function order(array $sequence)
+    {
+        $result = array();
+        $class = __CLASS__;
+
+        foreach ($this->toArray() as $item) {
+            $result[] = $item;
+        }
+
+        \usort($result, function ($a, $b) use ($sequence) {
+            foreach ($sequence as $order) {
+                $aValue = $order['func']($a);
+                $bValue = $order['func']($b);
+                if ($aValue > $bValue) {
+                    return $order['order'];
+                }
+                elseif ($aValue < $bValue) {
+                    return !$order['order'];
+                }
+            }
+
+            return false;
+        });
+
+        $resultObject = new $class($result);
+        $resultObject->orderSequence = $sequence;
+
+        return $resultObject;
     }
 }

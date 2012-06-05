@@ -3,6 +3,7 @@
 namespace BCC\EnumerableUtilityUtility\Tests\Enumerable;
 
 use BCC\EnumerableUtility\Tests\Fixtures\EnumerableMock;
+use BCC\EnumerableUtility\Tests\Fixtures\Object;
 
 class EnumerableTest extends \PHPUnit_Framework_TestCase
 {
@@ -146,6 +147,32 @@ class EnumerableTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(array(1, 2), $enumerable->takeWhile(function ($item) { return $item !== 3; })->toArray());
     }
 
+    public function testThenBy()
+    {
+        $obj1 = new Object(1, 2);
+        $obj2 = new Object(1, 1);
+        $obj3 = new Object(3, 1);
+
+        $enumerable = new EnumerableMock(array($obj1, $obj2, $obj3));
+        $this->assertEquals(array($obj2, $obj1, $obj3), $enumerable
+            ->orderBy(function (Object $obj) { return $obj->a; })
+            ->thenBy(function (Object $obj) { return $obj->b; })->toArray(),
+            'Order with then should double order');
+    }
+
+    public function testThenByDescending()
+    {
+        $obj1 = new Object(1, 2);
+        $obj2 = new Object(1, 1);
+        $obj3 = new Object(3, 1);
+
+        $enumerable = new EnumerableMock(array($obj1, $obj2, $obj3));
+        $this->assertEquals(array($obj1, $obj2, $obj3), $enumerable
+                ->orderBy(function (Object $obj) { return $obj->a; })
+                ->thenByDescending(function (Object $obj) { return $obj->b; })->toArray(),
+            'Order with then should double order');
+    }
+
     public function testWhere()
     {
         $enumerable = new EnumerableMock(array(1, 2, 3));
@@ -195,6 +222,8 @@ class EnumerableTest extends \PHPUnit_Framework_TestCase
             array('skipWhile', $this->func()),
             array('take', 1),
             array('takeWhile', $this->func()),
+            array('thenBy', $this->func()),
+            array('thenByDescending', $this->func()),
             array('where', $this->func()),
         );
     }
@@ -223,6 +252,8 @@ class EnumerableTest extends \PHPUnit_Framework_TestCase
             array('sum', $this->func()),
             array('take', 1),
             array('takeWhile', $this->func()),
+            array('thenBy', $this->func()),
+            array('thenByDescending', $this->func()),
             array('toArray'),
             array('where', $this->func()),
         );
