@@ -52,6 +52,15 @@ class EnumerableTest extends \PHPUnit_Framework_TestCase
     {
         $enumerable = new EnumerableMock(array(1, 2, 3, 3));
         $this->assertEquals(array(1, 2, 3), $enumerable->distinct()->toArray());
+        $this->assertEquals(array(1, 2), $enumerable->distinct(function ($item) { return $item%2;})->toArray());
+
+        $obj1 = new Object(1, 2);
+        $obj2 = new Object(1, 1);
+        $obj3 = new Object(3, 1);
+        $obj4 = new Object(1, 1);
+        $enumerable = new EnumerableMock(array($obj1, $obj2, $obj3, $obj4));
+        $this->assertEquals(array($obj1, $obj3), $enumerable->distinct(function ($item) { return $item->a;})->toArray());
+        $this->assertEquals(array($obj1, $obj2, $obj3), $enumerable->distinct(function ($item) { return array($item->a, $item->b);})->toArray());
     }
 
     public function testElementAt()

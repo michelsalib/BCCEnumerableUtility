@@ -79,7 +79,7 @@ Here is the list of the current implemented functions:
 - average: Computes the average value of the elements, a closure might be used
 - contains: Tells if the element is contains in the enumerable
 - count: Counts the number of elements
-- distinct: Reduces the set of elements to the distinct ones
+- distinct: Reduces the set of elements to the distinct ones, a closure might be used
 - elementAt: Gets the elements at a position
 - first: Gets the first elements, a closure might be used
 - last: Gets the first elements, a closure might be used

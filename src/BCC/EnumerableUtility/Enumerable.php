@@ -82,13 +82,17 @@ trait Enumerable
         return $result;
     }
 
-    public function distinct()
+    public function distinct($func = null)
     {
         $class = __CLASS__;
+        $distinct = array();
         $result = array();
+        $func = $func ?: function ($item) { return $item; };
 
         foreach ($this->toArray() as $item) {
-            if (!\in_array($item, $result)) {
+            $distinctKey = $func($item);
+            if (!\in_array($distinctKey, $distinct)) {
+                $distinct[] = $distinctKey;
                 $result[] = $item;
             }
         }
