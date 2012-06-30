@@ -3,6 +3,7 @@
 namespace BCC\EnumerableUtilityUtility\Tests\Enumerable;
 
 use BCC\EnumerableUtility\Tests\Fixtures\EnumerableMock;
+use BCC\EnumerableUtility\Grouping;
 use BCC\EnumerableUtility\Tests\Fixtures\Object;
 
 class EnumerableTest extends \PHPUnit_Framework_TestCase
@@ -75,6 +76,20 @@ class EnumerableTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(1, $enumerable->first());
         $this->assertEquals(2, $enumerable->first(function ($item) { return $item > 1; }));
         $this->assertEquals(null, $enumerable->first(function ($item) { return $item > 3; }));
+    }
+
+    public function testGroupBy()
+    {
+        $obj1 = new Object(1, 2);
+        $obj2 = new Object(2, 1);
+        $obj3 = new Object(3, 2);
+
+        $enumerable = new EnumerableMock(array($obj1, $obj2, $obj3));
+        $expect = array(
+            2 => new Grouping(2, array($obj1, $obj3)),
+            1 => new Grouping(1, array($obj2)),
+        );
+        $this->assertEquals($expect, $enumerable->groupBy(function (Object $obj) { return $obj->b; })->toArray());
     }
 
     public function testLast()
@@ -223,6 +238,7 @@ class EnumerableTest extends \PHPUnit_Framework_TestCase
     {
         return array(
             array('distinct'),
+            array('groupBy', $this->func()),
             array('orderBy', $this->func()),
             array('orderByDescending', $this->func()),
             array('reverse'),
@@ -249,6 +265,7 @@ class EnumerableTest extends \PHPUnit_Framework_TestCase
             array('distinct'),
             array('elementAt', 1),
             array('first'),
+            array('groupBy', $this->func()),
             array('last'),
             array('max'),
             array('min'),

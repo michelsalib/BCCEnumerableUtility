@@ -1,6 +1,7 @@
 {
     "name": "bcc/enumerable-utility",
     "type": "library",
+    "license": "MIT",
     "description": "Provides easy manipulation of array, string, and enumerables",
     "keywords": ["string array enumerable"],
     "homepage": "http://github.com/michelsalib/BCCEnumerableUtility",

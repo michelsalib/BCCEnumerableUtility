@@ -119,6 +119,30 @@ trait Enumerable
         return null;
     }
 
+    /**
+     * @param null $func
+     * @return Enumerable
+     */
+    public function groupBy($func)
+    {
+        $class = __CLASS__;
+        $result = array();
+
+        foreach ($this->toArray() as $item) {
+            $key = $func($item);
+            if (!isset($result[$key])) {
+                $result[$key] = array();
+            }
+            $result[$key][] = $item;
+        }
+
+        foreach ($result as $key => $items) {
+            $result[$key] = new Grouping($key, $items);
+        }
+
+        return new $class($result);
+    }
+
     public function last($func = null)
     {
         return $this->reverse()->first($func);
