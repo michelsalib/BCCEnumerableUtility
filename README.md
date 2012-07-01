@@ -19,53 +19,28 @@ You will need to run under PHP 5.4.
 
 You can simply download the source or use composer to get the package.
 
-##Use the `Enumerable` trait
+## A quick overview
 
-A simple reference to the trait will force you to add a `toArray` method to your class. This is everything you need to do. Let's take as an example a Basket which is an enumerable of Product:
-
-``` php
-<?php
-
-namespace \My;
-
-use \BCC\EnumerableUtility\Enumerable;
-
-class Basket {
-
-    use Enumerable;
-
-    private $products;
-
-    function __construct(array $products)
-    {
-        $this->products = $products;
-    }
-
-    public function toArray() {
-        return $this->products;
-    }
-}
-
-```
-
-You are good to go, and you can now write some fancy code:
+Most of the time you will just use the `Collection` class to address most of your use cases:
 
 ``` php
 <?php
 
-$basket = new Basket(...);
+use BCC\EnumerableUtility\Collection;
 
-// all the products with a value over 10
-$basket->where(function($product) { return $product->getValue() > 10; });
+$values = new Collection(array(1, 2, 3));
 
-// order by name
-$basket->orderBy(function($product) { return $product->getName(); });
+// gets event/odd values
+$values->where(function($item) { return $item % 2; });
 
-// has any product with a value under 50
-$basket->any(function($product) { return $product->getValue() < 50; });
+// project the squared values
+$values->select(function($item) { return $item*$item; });
 
-// first element with a value of 30
-$basket->first(function($product) { return $product->getValue() == 30; });
+// order
+$values->orderByDescending();
+
+// paginate
+$values->skip(30)->take(10);
 
 ```
 
@@ -82,6 +57,7 @@ Here is the list of the current implemented functions:
 - distinct: Reduces the set of elements to the distinct ones, a closure might be used
 - elementAt: Gets the elements at a position
 - first: Gets the first elements, a closure might be used
+- groupBy: Groups the elements by Group, a closure that selects the group is needed
 - last: Gets the first elements, a closure might be used
 - max: Gets the element with the maximum value, a closure might be used
 - min: Gets the element with the minimum value, a closure might be used
@@ -100,25 +76,21 @@ Here is the list of the current implemented functions:
 
 Note that the functions returns an instance of the calling class when applicable.
 
-## The `Collection` helper class
+## The `Collection` class
 
-Most of the time you will just use the `Collection` class to address this kind of use case:
+Behind being an enumerable, `Collection` has some useful functions:
 
-``` php
-<?php
-
-use \BCC\EnumerableUtility\Collection;
-
-$values = new Collection(array(1, 2, 3));
-
-// compute the sum
-$values->select(function($item) { return $item*$item; })->average();
-
-```
+- add, adds an item to the collection
+- addRange, adds a collection of items to the collection
+- clear, empty the collection
+- indexOf, gets the element of an item
+- insert, inserts an element at the given index
+- remove, removes and item
+- removeAt, removes and element at an index
 
 ## The `String` class
 
-The `String` class is uses `Enumerable` (understand enumerable of char), but it also adds some usefull methods.
+The `String` class is also an `Enumerable` (understand enumerable of char), but it also adds some usefull methods.
 
 These are inspired from the String class of the .NET framework:
 
@@ -151,7 +123,7 @@ You can now do:
 ``` php
 <?php
 
-use \BCC\EnumerableUtility\String;
+use BCC\EnumerableUtility\String;
 
 $string = new String('Hello world!');
 
@@ -161,6 +133,79 @@ $string = $string->replace('world', 'pineapple')       // replace world by pinea
        ->takeWhile(function($char) { $char != '!'; }); // take the rest while the char is different from '!'
 
 echo $string; // PINEAPPLE
+
+```
+
+##Use the `Enumerable` trait
+
+First, implement the `IEnumerable` interface. A simple reference to the trait will auto implement the interface. You will just be forced to add some additional methods that comes from the `IteratorAggregate` and `ArrayAccess` interfaces.
+Let's take as an example a Basket which is an enumerable of Product:
+
+``` php
+<?php
+
+namespace \My;
+
+use BCC\EnumerableUtility\Enumerable;
+use BCC\EnumerableUtility\IEnumerable;
+
+class Basket implements IEnumerable {
+
+    use Enumerable;
+
+    private $products;
+
+    function __construct(array $products)
+    {
+        $this->products = $products;
+    }
+
+    public function getIterator()
+    {
+        return new \ArrayIterator($this->products);
+    }
+
+    public function offsetExists($offset)
+    {
+        return isset($this->products[$offset]);
+    }
+
+    public function offsetGet($offset)
+    {
+        return $this->products[$offset];
+    }
+
+    public function offsetSet($offset, $value)
+    {
+        $this->products[$offset] = $value;
+    }
+
+    public function offsetUnset($offset)
+    {
+        unset($this->products[$offset]);
+    }
+}
+
+```
+
+You are good to go, and you can now write some fancy code:
+
+``` php
+<?php
+
+$basket = new Basket(...);
+
+// all the products with a value over 10
+$basket->where(function($product) { return $product->getValue() > 10; });
+
+// order by name
+$basket->orderBy(function($product) { return $product->getName(); });
+
+// has any product with a value under 50
+$basket->any(function($product) { return $product->getValue() < 50; });
+
+// first element with a value of 30
+$basket->first(function($product) { return $product->getValue() == 30; });
 
 ```
 

@@ -2,7 +2,7 @@
 
 namespace BCC\EnumerableUtility;
 
-class Collection
+class Collection implements IEnumerable
 {
     use Enumerable;
 
@@ -14,17 +14,93 @@ class Collection
             $this->array = array();
         }
         else if (is_array($array)) {
-            $this->array = $array;
+            $this->array = \array_values($array);
         }
-        else if ($array instanceof Collection) {
-            $this->array = $array->toArray();
+        else if ($array instanceof \Traversable) {
+            $this->array = \iterator_to_array($array);
         }
         else {
-            throw new \InvalidArgumentException('You must give an array or a Collection');
+            throw new \InvalidArgumentException('You must give an array or a Traversable');
         }
     }
 
-    public function toArray() {
-        return $this->array;
+    public function getIterator()
+    {
+        return new \ArrayIterator($this->array);
+    }
+
+    public function offsetExists($offset)
+    {
+        return isset($this->array[$offset]);
+    }
+
+    public function offsetGet($offset)
+    {
+        return $this->array[$offset];
+    }
+
+    public function offsetSet($offset, $value)
+    {
+        $this->array[$offset] = $value;
+    }
+
+    public function offsetUnset($offset)
+    {
+        unset($this->array[$offset]);
+    }
+
+    public function add($item)
+    {
+        $this->array[] = $item;
+    }
+
+    public function addRange($items)
+    {
+        if ($items instanceof \Traversable) {
+            $items = \iterator_to_array($items);
+        }
+
+        if (!is_array($items))  {
+            throw new \InvalidArgumentException('You must give an array or a Traversable');
+        }
+
+        $this->array = \array_merge($this->array, $items);
+    }
+
+    public function clear()
+    {
+        $this->array = array();
+    }
+
+    public function indexOf($item)
+    {
+        $result = \array_search($item, $this->array, true);
+
+        return $result !== false ? $result : -1;
+    }
+
+    public function insert($index, $item)
+    {
+        $result = $this->take($index);
+        $result->add($item);
+        $result->addRange($this->skip($index)->toArray());
+
+        $this->array = $result->toArray();
+    }
+
+    public function remove($item)
+    {
+        $index = $this->indexOf($item);
+
+        if ($index !== -1) {
+            $this->removeAt($index);
+        }
+    }
+
+    public function removeAt($index)
+    {
+        unset($this->array[$index]);
+
+        $this->array = \array_values($this->array);
     }
 }

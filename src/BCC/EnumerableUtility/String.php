@@ -2,7 +2,7 @@
 
 namespace BCC\EnumerableUtility;
 
-class String
+class String implements IEnumerable
 {
     use Enumerable;
 
@@ -18,7 +18,7 @@ class String
         }
         /** @var $string String */
         else if ($string instanceof String) {
-            $this->string = $string->__toString();
+            $this->string = $string->string;
         }
         else if (is_string($string)) {
             $this->string = $string;
@@ -31,17 +31,44 @@ class String
         }
     }
 
-    function __toString() {
+    function __toString()
+    {
         return $this->string;
     }
 
-    public function toArray()
+    public function getIterator()
     {
         if ($this->string === '') {
             return array();
         }
 
         return \str_split($this->string);
+    }
+
+    public function offsetExists($offset)
+    {
+        return \strlen($this->string) > $offset;
+    }
+
+    public function offsetGet($offset)
+    {
+        return \substr($this->string, $offset, 1);
+    }
+
+    public function offsetSet($offset, $value)
+    {
+        $before = \substr($this->string, 0, $offset);
+        $after  = \substr($this->string, $offset + 1);
+
+        $this->string = $before.$value.$after;
+    }
+
+    public function offsetUnset($offset)
+    {
+        $before = \substr($this->string, 0, $offset);
+        $after  = \substr($this->string, $offset + 1);
+
+        $this->string = $before.$after;
     }
 
     public function contains($value, $ignoreCase = false)

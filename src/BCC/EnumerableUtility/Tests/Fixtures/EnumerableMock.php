@@ -2,9 +2,10 @@
 
 namespace BCC\EnumerableUtility\Tests\Fixtures;
 
-use \BCC\EnumerableUtility\Enumerable;
+use BCC\EnumerableUtility\Enumerable;
+use BCC\EnumerableUtility\IEnumerable;
 
-class EnumerableMock
+class EnumerableMock implements IEnumerable
 {
     use Enumerable;
 
@@ -18,15 +19,36 @@ class EnumerableMock
         else if (is_array($array)) {
             $this->array = $array;
         }
-        else if ($array instanceof EnumerableMock) {
-            $this->array = $array->toArray();
+        else if ($array instanceof \Traversable) {
+            $this->array = \iterator_to_array($array);
         }
         else {
             throw new \LogicException('You must give an EnumerableMock');
         }
     }
 
-    public function toArray() {
-        return $this->array;
+    public function getIterator()
+    {
+        return new \ArrayIterator($this->array);
+    }
+
+    public function offsetExists($offset)
+    {
+        return isset($this->array[$offset]);
+    }
+
+    public function offsetGet($offset)
+    {
+        return $this->array[$offset];
+    }
+
+    public function offsetSet($offset, $value)
+    {
+        $this->array[$offset] = $value;
+    }
+
+    public function offsetUnset($offset)
+    {
+        unset($this->array[$offset]);
     }
 }

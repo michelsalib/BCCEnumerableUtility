@@ -4,16 +4,33 @@ namespace BCC\EnumerableUtility;
 
 trait Enumerable
 {
-    protected $orderSequence = array();
+    protected $orderSequence   = array();
     protected $orderAscending  = true;
     protected $orderDescending = false;
 
-    public abstract function toArray();
+    /**
+     * @abstract
+     * @return \Iterator
+     */
+    public abstract function getIterator();
+
+    public abstract function offsetExists($offset);
+
+    public abstract function offsetGet($offset);
+
+    public abstract function offsetSet($offset, $value);
+
+    public abstract function offsetUnset($offset);
+
+    public function toArray()
+    {
+        return (array) $this->getIterator();
+    }
 
     public function aggregate($func)
     {
         $result = null;
-        foreach ($this->toArray() as $item) {
+        foreach ($this as $item) {
             $result = $func($result, $item);
         }
 
@@ -22,7 +39,7 @@ trait Enumerable
 
     public function all($func)
     {
-        foreach ($this->toArray() as $item) {
+        foreach ($this as $item) {
             if (!$func($item)) {
 
                 return false;
@@ -36,7 +53,7 @@ trait Enumerable
     {
         $func = $func ?: function() { return true; };
 
-        foreach ($this->toArray() as $item) {
+        foreach ($this as $item) {
             if ($func($item)) {
 
                 return true;
@@ -49,7 +66,7 @@ trait Enumerable
     public function average($func)
     {
         $result = array();
-        foreach ($this->toArray() as $item) {
+        foreach ($this as $item) {
             $result[] = $func($item);
         }
 
@@ -58,7 +75,7 @@ trait Enumerable
 
     public function contains($value)
     {
-        foreach ($this->toArray() as $item) {
+        foreach ($this as $item) {
             if ($value === $item) {
 
                 return true;
@@ -73,7 +90,7 @@ trait Enumerable
         $func = $func ?: function () { return true; };
         $result = 0;
 
-        foreach ($this->toArray() as $item) {
+        foreach ($this as $item) {
             if ($func($item)) {
                 $result++;
             }
@@ -89,7 +106,7 @@ trait Enumerable
         $result = array();
         $func = $func ?: function ($item) { return $item; };
 
-        foreach ($this->toArray() as $item) {
+        foreach ($this as $item) {
             $distinctKey = $func($item);
             if (!\in_array($distinctKey, $distinct)) {
                 $distinct[] = $distinctKey;
@@ -102,14 +119,14 @@ trait Enumerable
 
     public function elementAt($index)
     {
-        return $this->toArray()[$index];
+        return $this[$index];
     }
 
     public function first($func = null)
     {
         $func = $func ?: function () { return true; };
 
-        foreach ($this->toArray() as $item) {
+        foreach ($this as $item) {
             if ($func($item)) {
 
                 return $item;
@@ -128,7 +145,7 @@ trait Enumerable
         $class = __CLASS__;
         $result = array();
 
-        foreach ($this->toArray() as $item) {
+        foreach ($this as $item) {
             $key = $func($item);
             if (!isset($result[$key])) {
                 $result[$key] = array();
@@ -157,7 +174,7 @@ trait Enumerable
         $result = null;
         $resultValue = null;
 
-        foreach ($this->toArray() as $item) {
+        foreach ($this as $item) {
             $newResultValue = $func($item);
             if ($newResultValue > $resultValue) {
                 $resultValue = $newResultValue;
@@ -177,7 +194,7 @@ trait Enumerable
         $result = null;
         $resultValue = PHP_INT_MAX;
 
-        foreach ($this->toArray() as $item) {
+        foreach ($this as $item) {
             $newResultValue = $func($item);
             if ($newResultValue < $resultValue) {
                 $resultValue = $newResultValue;
@@ -249,7 +266,7 @@ trait Enumerable
         $result = array();
         $skipping = true;
 
-        foreach ($this->toArray() as $item) {
+        foreach ($this as $item) {
             if ($skipping && $func($item)) {
                 continue;
             }
@@ -267,7 +284,7 @@ trait Enumerable
         $func = $func ?: function ($item) { return $item; };
 
         $result = 0;
-        foreach ($this->toArray() as $item) {
+        foreach ($this as $item) {
             $result += $func($item);
         }
 
@@ -294,7 +311,7 @@ trait Enumerable
         $class = __CLASS__;
         $result = array();
 
-        foreach ($this->toArray() as $item) {
+        foreach ($this as $item) {
             if (!$func($item)) {
                 break;
             }
@@ -339,7 +356,7 @@ trait Enumerable
         $class = __CLASS__;
         $result = array();
 
-        foreach ($this->toArray() as $item) {
+        foreach ($this as $item) {
             if ($func($item)) {
                 $result[] = $item;
             }
@@ -353,7 +370,7 @@ trait Enumerable
         $result = array();
         $class = __CLASS__;
 
-        foreach ($this->toArray() as $item) {
+        foreach ($this as $item) {
             $result[] = $item;
         }
 
