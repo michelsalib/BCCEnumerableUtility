@@ -16,6 +16,10 @@ interface IEnumerable extends \IteratorAggregate, \ArrayAccess
 
     public function count($func = null);
 
+    /**
+     * @param null $func
+     * @return IEnumerable
+     */
     public function distinct($func = null);
 
     public function elementAt($index);
@@ -27,6 +31,15 @@ interface IEnumerable extends \IteratorAggregate, \ArrayAccess
      * @return IEnumerable
      */
     public function groupBy($func);
+
+    /**
+     * @param $innerItems
+     * @param $outerSelector
+     * @param $innerSelector
+     * @param $resultSelector
+     * @return IEnumerable
+     */
+    public function join($innerItems, $outerSelector, $innerSelector, $resultSelector);
 
     public function last($func = null);
 
@@ -52,6 +65,10 @@ interface IEnumerable extends \IteratorAggregate, \ArrayAccess
      */
     public function reverse();
 
+    /**
+     * @param $func
+     * @return IEnumerable
+     */
     public function select($func);
 
     /**

@@ -160,6 +160,23 @@ trait Enumerable
         return new $class($result);
     }
 
+    public function join($innerItems, $outerSelector, $innerSelector, $resultSelector)
+    {
+        $class = __CLASS__;
+        $result = array();
+
+        foreach ($this as $outer) {
+            $outerKey = $outerSelector($outer);
+            foreach ($innerItems as $inner) {
+                if ($outerKey === $innerSelector($inner)) {
+                    $result[] = $resultSelector($outer, $inner);
+                }
+            }
+        }
+
+        return new $class($result);
+    }
+
     public function last($func = null)
     {
         return $this->reverse()->first($func);

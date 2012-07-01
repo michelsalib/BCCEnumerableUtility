@@ -14,7 +14,7 @@ class String implements IEnumerable
     function __construct($string = null)
     {
         if (is_array($string)) {
-            $this->string = String::join('', $string)->__toString();
+            $this->string = String::concatenate('', $string)->__toString();
         }
         /** @var $string String */
         else if ($string instanceof String) {
@@ -156,7 +156,7 @@ class String implements IEnumerable
         return \strlen(\trim($string)) === 0;
     }
 
-    public static function join($separator, array $strings)
+    public static function concatenate($separator, array $strings)
     {
         return new String(\implode($separator, $strings));
     }

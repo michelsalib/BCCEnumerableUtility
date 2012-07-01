@@ -59,6 +59,7 @@ Here is the list of the current implemented functions:
 - elementAt: Gets the elements at a position
 - first: Gets the first elements, a closure might be used
 - groupBy: Groups the elements by Group, a closure that selects the group is needed
+- join: Correlates the elements of two collections based on matching keys, closures are needed for key and result selection
 - last: Gets the first elements, a closure might be used
 - max: Gets the element with the maximum value, a closure might be used
 - min: Gets the element with the minimum value, a closure might be used
@@ -117,7 +118,7 @@ These are inspired from the String class of the .NET framework:
 - insert: inserts another string at the given position
 - *static* isNullOrEmpty: tests if the given string is null or empty
 - *static* isNullOrWhiteSpace: tests if the given string is null or whitespace
-- *static* join: Concats an array of strings using the given separator
+- *static* concatenate: Concats an array of strings using the given separator
 - lastIndexOf: gets the last index of a given string, can be insensitive
 - padLeft: pads the left of the string to match a given length, the padding char can be defined
 - padRight: pads the right of the string to match a given length, the padding char can be defined

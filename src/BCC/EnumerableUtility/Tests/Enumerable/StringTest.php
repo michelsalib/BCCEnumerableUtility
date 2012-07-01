@@ -89,9 +89,9 @@ class StringTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue(String::isNullOrWhiteSpace(' '));
     }
 
-    public function testJoin()
+    public function testConcatenate()
     {
-        $this->assertEquals('Hello world!', String::join(' ', array('Hello', 'world!')));
+        $this->assertEquals('Hello world!', String::concatenate(' ', array('Hello', 'world!')));
     }
 
     public function testLastIndexOf()

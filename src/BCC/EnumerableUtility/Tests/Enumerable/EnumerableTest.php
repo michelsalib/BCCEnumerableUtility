@@ -92,6 +92,28 @@ class EnumerableTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expect, $enumerable->groupBy(function (Object $obj) { return $obj->b; })->toArray());
     }
 
+    public function testJoin()
+    {
+        $obj1 = new Object('Michel', 1);
+        $obj2 = new Object('Sam', 2);
+        $obj3 = new Object('Julien', 3);
+
+        $obj4 = new Object(1, 'Salib');
+        $obj5 = new Object(2, 'Michaud');
+        $obj6 = new Object(3, 'Crochet');
+
+        $enumerable1 = new EnumerableMock(array($obj1, $obj2, $obj3));
+        $enumerable2 = new EnumerableMock(array($obj4, $obj5, $obj6));
+        $this->assertEquals(array('Michel Salib', 'Sam Michaud', 'Julien Crochet'),
+            $enumerable1->join(
+                $enumerable2,
+                function (Object $obj) { return $obj->b; },
+                function (Object $obj) { return $obj->a; },
+                function (Object $obj1, Object $obj2) { return $obj1->a.' '.$obj2->b; }
+            )->toArray()
+        );
+    }
+
     public function testLast()
     {
         $enumerable = new EnumerableMock(array(1, 2, 3));
@@ -244,6 +266,7 @@ class EnumerableTest extends \PHPUnit_Framework_TestCase
     {
         return array(
             array('distinct'),
+            array('join', array(), $this->func(), $this->func(), $this->func()),
             array('groupBy', $this->func()),
             array('orderBy', $this->func()),
             array('orderByDescending', $this->func()),
@@ -272,6 +295,7 @@ class EnumerableTest extends \PHPUnit_Framework_TestCase
             array('elementAt', 1),
             array('first'),
             array('groupBy', $this->func()),
+            array('join', array(), $this->func(), $this->func(), $this->func()),
             array('last'),
             array('max'),
             array('min'),

@@ -13,7 +13,7 @@ class StringUtilityTest extends \PHPUnit_Framework_TestCase
 
     public function testStaticFallback()
     {
-        $this->assertEquals('Hello world!', StringUtility::join(' ', array('Hello', 'world!')));
+        $this->assertEquals('Hello world!', StringUtility::concatenate(' ', array('Hello', 'world!')));
     }
 
     public function testNonStringReturn()
