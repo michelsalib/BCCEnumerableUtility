@@ -197,6 +197,12 @@ class EnumerableTest extends \PHPUnit_Framework_TestCase
             'Order with then should double order');
     }
 
+    public function testToArray()
+    {
+        $collection = new EnumerableMock(array(1, 2, 3));
+        $this->assertEquals(array(1, 2, 3), $collection->toArray());
+    }
+
     public function testWhere()
     {
         $enumerable = new EnumerableMock(array(1, 2, 3));

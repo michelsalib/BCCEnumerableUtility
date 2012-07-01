@@ -9,6 +9,7 @@ The enumerable utility library provides an easy way to manipulate enumerables. T
 - An `Enumerable` trait with many usefull methods
 - A `String` class that uses `Enumerable` and adds more wonderful methods
 - A `Collection` class that helps you rapidly leverage the `Enumerable` trait
+- A `Dictionary` class that is an indexed `Collection`
 - A `StringUtility` class if you don't like the idea of a `String` class
 
 It takes inspiration from the Linq Enumerable class extension of the .NET framework.
@@ -80,13 +81,26 @@ Note that the functions returns an instance of the calling class when applicable
 
 Behind being an enumerable, `Collection` has some useful functions:
 
-- add, adds an item to the collection
-- addRange, adds a collection of items to the collection
-- clear, empty the collection
-- indexOf, gets the element of an item
-- insert, inserts an element at the given index
-- remove, removes and item
-- removeAt, removes and element at an index
+- add: adds an item to the collection
+- addRange: adds a collection of items to the collection
+- clear: empty the collection
+- indexOf: gets the element of an item
+- insert: inserts an element at the given index
+- remove: removes and item
+- removeAt: removes and element at an index
+
+## The `Dictionary` class
+
+Behind being an enumerable, `Dictionary` has some useful functions:
+
+- keys: gets the keys
+- values: gets the values
+- add: adds an item with the given key
+- clear: empty the dictionary
+- containsKey: validates if the key is used
+- containsValue: validates if the value is contained
+- remove: removes the item at the given key
+- tryGetValue: tries to get the value at the given key
 
 ## The `String` class
 

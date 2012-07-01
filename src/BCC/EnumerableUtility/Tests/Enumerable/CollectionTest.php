@@ -24,12 +24,6 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
         new Collection(10);
     }
 
-    public function testToArray()
-    {
-        $collection = new Collection(array(1, 2, 3));
-        $this->assertEquals(array(1, 2, 3), $collection->toArray());
-    }
-
     public function testAdd()
     {
         $collection = new Collection(array(1, 2));

@@ -17,7 +17,7 @@ class Collection implements IEnumerable
             $this->array = \array_values($array);
         }
         else if ($array instanceof \Traversable) {
-            $this->array = \iterator_to_array($array);
+            $this->array = \iterator_to_array($array, false);
         }
         else {
             throw new \InvalidArgumentException('You must give an array or a Traversable');
