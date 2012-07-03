@@ -92,7 +92,7 @@ class String implements IEnumerable
             $pos = \strrpos($this->string, $value);
         }
 
-        return $pos === \strlen($value);
+        return $pos === \strlen($this->string) - \strlen($value);
     }
 
     public function startsWith($value, $ignoreCase = false)

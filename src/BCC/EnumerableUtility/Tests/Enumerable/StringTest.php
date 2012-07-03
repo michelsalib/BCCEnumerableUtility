@@ -44,6 +44,9 @@ class StringTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($string->endsWith('world!'));
         $this->assertFalse($string->endsWith('WORLD!'));
         $this->assertTrue($string->endsWith('WORLD!', true));
+
+        $string = new String('Hello to myself');
+        $this->assertTrue($string->endsWith('myself'));
     }
 
     public function testEquals()
