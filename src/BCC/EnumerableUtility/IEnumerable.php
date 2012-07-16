@@ -2,7 +2,7 @@
 
 namespace BCC\EnumerableUtility;
 
-interface IEnumerable extends \IteratorAggregate, \ArrayAccess
+interface IEnumerable extends \IteratorAggregate, \ArrayAccess, \Countable
 {
     public function aggregate($func);
 

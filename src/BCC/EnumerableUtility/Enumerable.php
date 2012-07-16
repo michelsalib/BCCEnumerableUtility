@@ -143,18 +143,20 @@ trait Enumerable
     public function groupBy($func)
     {
         $class = __CLASS__;
+        $compute = array();
         $result = array();
 
         foreach ($this as $item) {
-            $key = $func($item);
-            if (!isset($result[$key])) {
-                $result[$key] = array();
+            $group = $func($item);
+            $key = is_object($group) ? \spl_object_hash($group) : $group;
+            if (!isset($compute[$key])) {
+                $compute[$key] = array('group' => $group, 'items' => array());
             }
-            $result[$key][] = $item;
+            $compute[$key]['items'][] = $item;
         }
 
-        foreach ($result as $key => $items) {
-            $result[$key] = new Grouping($key, $items);
+        foreach ($compute as $item) {
+            $result[] = new Grouping($item['group'], $item['items']);
         }
 
         return new $class($result);

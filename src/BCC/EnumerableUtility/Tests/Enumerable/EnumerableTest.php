@@ -86,10 +86,27 @@ class EnumerableTest extends \PHPUnit_Framework_TestCase
 
         $enumerable = new EnumerableMock(array($obj1, $obj2, $obj3));
         $expect = array(
-            2 => new Grouping(2, array($obj1, $obj3)),
-            1 => new Grouping(1, array($obj2)),
+            new Grouping(2, array($obj1, $obj3)),
+            new Grouping(1, array($obj2)),
         );
         $this->assertEquals($expect, $enumerable->groupBy(function (Object $obj) { return $obj->b; })->toArray());
+    }
+
+    public function testGroupByUsingObjectAsGroup()
+    {
+        $key1 = new Object(1, 1);
+        $key2 = new Object(1, 2);
+
+        $obj1 = new Object(1, $key1);
+        $obj2 = new Object(2, $key2);
+        $obj3 = new Object(3, $key1);
+
+        $enumerable = new EnumerableMock(array($obj1, $obj2, $obj3));
+        $result = $enumerable->groupBy(function (Object $obj) { return $obj->b; });
+
+        $this->assertCount(2, $result);
+        $this->assertEquals(new Grouping($key1, array($obj1, $obj3)), $result->first());
+        $this->assertEquals(new Grouping($key2, array($obj2)), $result->elementAt(1));
     }
 
     public function testJoin()
