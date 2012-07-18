@@ -52,31 +52,58 @@ Here is the list of the current implemented functions:
 - aggregate: Applies an accumulator function over the elements
 - all: Validates a closure against every elements, true if all matches
 - any: Validates a closure against every elements, true if at least one matches
-- average: Computes the average value of the elements, a closure might be used
+- average: Computes the average value of the elements, a selector might be used
 - contains: Tells if the element is contains in the enumerable
 - count: Counts the number of elements
-- distinct: Reduces the set of elements to the distinct ones, a closure might be used
+- distinct: Reduces the set of elements to the distinct ones, a selector might be used
 - elementAt: Gets the elements at a position
 - first: Gets the first elements, a closure might be used
-- groupBy: Groups the elements by Group, a closure that selects the group is needed
-- join: Correlates the elements of two collections based on matching keys, closures are needed for key and result selection
+- groupBy: Groups the elements by Group, a selector that selects the group is needed
+- join: Correlates the elements of two collections based on matching keys, selectors are needed for keys and a closure for result selection
 - last: Gets the first elements, a closure might be used
-- max: Gets the element with the maximum value, a closure might be used
-- min: Gets the element with the minimum value, a closure might be used
-- orderBy: Orders the elements, a closure might be used
-- orderByDescending: Orders the elements in a descending order, a closure might be used
+- max: Gets the element with the maximum value, a selector might be used
+- min: Gets the element with the minimum value, a selector might be used
+- orderBy: Orders the elements, a v might be used
+- orderByDescending: Orders the elements in a descending order, a selector might be used
 - reverse: Reverses the order of the elements
-- select: Projects every elements using a closure
+- select: Projects every elements using a selector
 - skip: Skips a number of elements
 - skipWhile: Skips elements while a closure is satisfied
-- sum: Computes the sum of the elements, a closure might be used
+- sum: Computes the sum of the elements, a selector might be used
 - take: Takes a number ok elements
 - takeWhile: Takes elements while a closure is satisfied
-- thenBy: Appends sub order, a closure might be used
-- thenByDescending: Appends sub descending order, a closure might be used
+- thenBy: Appends sub order, a selector might be used
+- thenByDescending: Appends sub descending order, a selector might be used
 - where: Reduces the set of elements using a closure
 
 Note that the functions returns an instance of the calling class when applicable.
+
+### Use of selectors
+
+Sometimes, you just want to specify a single property and then a full closure:
+
+``` php
+<?php
+
+$values->select(function($item) { return $item->address; });
+
+```
+
+Hopefully where the documentation says selector as argument name, you can simply give a string that tells the field you want to select:
+
+``` php
+<?php
+
+$values->select('address');
+
+```
+
+Note that string selectors supports also:
+- chaining: `address.city`
+- array transversing: `phoneNumbers[2]`
+- auto discover getter/haser/isser
+
+*This is heavily based on the work done on the Symfony2 framework in the form component.*
 
 ## The `Collection` class
 

@@ -10,7 +10,7 @@ interface IEnumerable extends \IteratorAggregate, \ArrayAccess, \Countable
 
     public function any($func = null);
 
-    public function average($func);
+    public function average($selector);
 
     public function contains($value);
 
@@ -20,7 +20,7 @@ interface IEnumerable extends \IteratorAggregate, \ArrayAccess, \Countable
      * @param null $func
      * @return IEnumerable
      */
-    public function distinct($func = null);
+    public function distinct($selector = null);
 
     public function elementAt($index);
 
@@ -30,34 +30,34 @@ interface IEnumerable extends \IteratorAggregate, \ArrayAccess, \Countable
      * @param null $func
      * @return IEnumerable
      */
-    public function groupBy($func);
+    public function groupBy($selector);
 
     /**
      * @param $innerItems
      * @param $outerSelector
      * @param $innerSelector
-     * @param $resultSelector
+     * @param $resultFunc
      * @return IEnumerable
      */
-    public function join($innerItems, $outerSelector, $innerSelector, $resultSelector);
+    public function join($innerItems, $outerSelector, $innerSelector, $resultFunc);
 
     public function last($func = null);
 
-    public function max($func = null);
+    public function max($selector = null);
 
-    public function min($func = null);
-
-    /**
-     * @param null $func
-     * @return IEnumerable
-     */
-    public function orderBy($func = null);
+    public function min($selector = null);
 
     /**
      * @param null $func
      * @return IEnumerable
      */
-    public function orderByDescending($func = null);
+    public function orderBy($selector = null);
+
+    /**
+     * @param null $func
+     * @return IEnumerable
+     */
+    public function orderByDescending($selector = null);
 
     /**
      * @param $string
@@ -69,7 +69,7 @@ interface IEnumerable extends \IteratorAggregate, \ArrayAccess, \Countable
      * @param $func
      * @return IEnumerable
      */
-    public function select($func);
+    public function select($selector);
 
     /**
      * @param $count
@@ -83,7 +83,7 @@ interface IEnumerable extends \IteratorAggregate, \ArrayAccess, \Countable
      */
     public function skipWhile($func);
 
-    public function sum($func = null);
+    public function sum($selector = null);
 
     /**
      * @param $count
@@ -101,13 +101,13 @@ interface IEnumerable extends \IteratorAggregate, \ArrayAccess, \Countable
      * @param null $func
      * @return IEnumerable
      */
-    public function thenBy($func = null);
+    public function thenBy($selector = null);
 
     /**
      * @param null $func
      * @return IEnumerable
      */
-    public function thenByDescending($func = null);
+    public function thenByDescending($selector = null);
 
     /**
      * @abstract

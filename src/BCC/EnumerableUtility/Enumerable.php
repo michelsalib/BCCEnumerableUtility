@@ -2,6 +2,8 @@
 
 namespace BCC\EnumerableUtility;
 
+use BCC\EnumerableUtility\Util\PropertyPath;
+
 trait Enumerable
 {
     protected $orderSequence   = array();
@@ -63,8 +65,10 @@ trait Enumerable
         return false;
     }
 
-    public function average($func)
+    public function average($selector)
     {
+        $func = $this->resolveSelector($selector);
+
         $result = array();
         foreach ($this as $item) {
             $result[] = $func($item);
@@ -99,12 +103,12 @@ trait Enumerable
         return $result;
     }
 
-    public function distinct($func = null)
+    public function distinct($selector = null)
     {
         $class = __CLASS__;
         $distinct = array();
         $result = array();
-        $func = $func ?: function ($item) { return $item; };
+        $func = $this->resolveSelector($selector);
 
         foreach ($this as $item) {
             $distinctKey = $func($item);
@@ -140,11 +144,12 @@ trait Enumerable
      * @param null $func
      * @return Enumerable
      */
-    public function groupBy($func)
+    public function groupBy($selector)
     {
         $class = __CLASS__;
         $compute = array();
         $result = array();
+        $func = $this->resolveSelector($selector);
 
         foreach ($this as $item) {
             $group = $func($item);
@@ -162,16 +167,19 @@ trait Enumerable
         return new $class($result);
     }
 
-    public function join($innerItems, $outerSelector, $innerSelector, $resultSelector)
+    public function join($innerItems, $outerSelector, $innerSelector, $resultFunc)
     {
         $class = __CLASS__;
         $result = array();
 
+        $outerFunc = $this->resolveSelector($outerSelector);
+        $innerFunc = $this->resolveSelector($innerSelector);
+
         foreach ($this as $outer) {
-            $outerKey = $outerSelector($outer);
+            $outerKey = $outerFunc($outer);
             foreach ($innerItems as $inner) {
-                if ($outerKey === $innerSelector($inner)) {
-                    $result[] = $resultSelector($outer, $inner);
+                if ($outerKey === $innerFunc($inner)) {
+                    $result[] = $resultFunc($outer, $inner);
                 }
             }
         }
@@ -184,14 +192,15 @@ trait Enumerable
         return $this->reverse()->first($func);
     }
 
-    public function max($func = null)
+    public function max($selector = null)
     {
-        if ($func === null) {
+        if ($selector === null) {
             return \max($this->toArray());
         }
 
         $result = null;
         $resultValue = null;
+        $func = $this->resolveSelector($selector);
 
         foreach ($this as $item) {
             $newResultValue = $func($item);
@@ -204,14 +213,15 @@ trait Enumerable
         return $result;
     }
 
-    public function min($func = null)
+    public function min($selector = null)
     {
-        if ($func === null) {
+        if ($selector === null) {
             return \min($this->toArray());
         }
 
         $result = null;
         $resultValue = PHP_INT_MAX;
+        $func = $this->resolveSelector($selector);
 
         foreach ($this as $item) {
             $newResultValue = $func($item);
@@ -225,23 +235,23 @@ trait Enumerable
     }
 
     /**
-     * @param null $func
+     * @param null $selector
      * @return Enumerable
      */
-    public function orderBy($func = null)
+    public function orderBy($selector = null)
     {
-        $func = $func ?: function ($item) { return $item; };
+        $func = $this->resolveSelector($selector);
 
         return $this->order(array(array('order' => $this->orderAscending, 'func' => $func)));
     }
 
     /**
-     * @param null $func
+     * @param null $selector
      * @return Enumerable
      */
-    public function orderByDescending($func = null)
+    public function orderByDescending($selector = null)
     {
-        $func = $func ?: function ($item) { return $item; };
+        $func = $this->resolveSelector($selector);
 
         return $this->order(array(array('order' => $this->orderDescending, 'func' => $func)));
     }
@@ -257,11 +267,17 @@ trait Enumerable
         return new $class(\array_reverse($this->toArray()));
     }
 
-    public function select($func)
+    /**
+     * @param $selector
+     * @return Enumerable
+     */
+    public function select($selector)
     {
         $class = __CLASS__;
 
-        return new $class(\array_map(function ($item) use ($func) { return $func($item); }, $this->toArray()));
+        $func = $this->resolveSelector($selector);
+
+        return new $class(\array_map($func, $this->toArray()));
     }
 
     /**
@@ -298,9 +314,9 @@ trait Enumerable
         return new $class($result);
     }
 
-    public function sum($func = null)
+    public function sum($selector = null)
     {
-        $func = $func ?: function ($item) { return $item; };
+        $func = $this->resolveSelector($selector);
 
         $result = 0;
         foreach ($this as $item) {
@@ -344,9 +360,9 @@ trait Enumerable
      * @param null $func
      * @return Enumerable
      */
-    public function thenBy($func = null)
+    public function thenBy($selector = null)
     {
-        $func = $func ?: function ($item) { return $item; };
+        $func = $this->resolveSelector($selector);
         $sequence = $this->orderSequence;
         $sequence[] = array('order' => $this->orderAscending, 'func' => $func);
 
@@ -357,9 +373,9 @@ trait Enumerable
      * @param null $func
      * @return Enumerable
      */
-    public function thenByDescending($func = null)
+    public function thenByDescending($selector = null)
     {
-        $func = $func ?: function ($item) { return $item; };
+        $func = $this->resolveSelector($selector);
         $sequence = $this->orderSequence;
         $sequence[] = array('order' => $this->orderDescending, 'func' => $func);
 
@@ -412,5 +428,22 @@ trait Enumerable
         $resultObject->orderSequence = $sequence;
 
         return $resultObject;
+    }
+
+    protected function resolveSelector($selector = null)
+    {
+        if ($selector === null) {
+            return function ($item) { return $item; };
+        }
+        if (\is_callable($selector)) {
+            return $selector;
+        }
+        if (\is_string($selector)) {
+            $propertyPath = new PropertyPath($selector);
+
+            return function($item) use ($propertyPath) { return $propertyPath->getValue($item); };
+        }
+
+        throw new \LogicException('Selector cannot be resolved');
     }
 }
