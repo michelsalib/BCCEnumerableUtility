@@ -264,6 +264,15 @@ abstract class EnumerableTestBase extends \PHPUnit_Framework_TestCase
 
     public function testThenBy()
     {
+        $enumerable = $this->newInstance(array(1, 2, 3, 4, 5));
+        $this->assertEquals(array(2, 4, 1, 3, 5), $enumerable
+                ->orderBy($this->preClosure(function ($item) { return $item%2; }))
+                ->thenBy(),
+            'Order with then should double order');
+    }
+
+    public function testThenByWithObject()
+    {
         $obj1 = new Object(1, 2);
         $obj2 = new Object(1, 1);
         $obj3 = new Object(3, 1);
@@ -276,6 +285,15 @@ abstract class EnumerableTestBase extends \PHPUnit_Framework_TestCase
     }
 
     public function testThenByDescending()
+    {
+        $enumerable = $this->newInstance(array(1, 2, 3, 4, 5));
+        $this->assertEquals(array(4, 2, 5, 3, 1), $enumerable
+                ->orderBy($this->preClosure(function ($item) { return $item%2; }))
+                ->thenByDescending(),
+            'Order with then should double order');
+    }
+
+    public function testThenByDescendingWithObject()
     {
         $obj1 = new Object(1, 2);
         $obj2 = new Object(1, 1);

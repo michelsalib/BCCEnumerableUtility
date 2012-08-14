@@ -50,14 +50,14 @@ class StringTest extends EnumerableTestBase
         return; // String does not support Objects
     }
 
-    public function testThenBy()
+    public function testThenByWithObject()
     {
-        $this->markTestSkipped('Must be ported');
+        return; // String does not support Objects
     }
 
-    public function testThenByDescending()
+    public function testThenByDescendingWithObject()
     {
-        $this->markTestSkipped('Must be ported');
+        return; // String does not support Objects
     }
 
     public function testContains()
