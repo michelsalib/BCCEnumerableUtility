@@ -14,7 +14,7 @@ class String implements IEnumerable
     function __construct($string = null)
     {
         if (is_array($string)) {
-            $this->string = String::concatenate('', $string)->__toString();
+            $this->string = \implode($string);
         }
         /** @var $string String */
         else if ($string instanceof String) {
@@ -39,10 +39,10 @@ class String implements IEnumerable
     public function getIterator()
     {
         if ($this->string === '') {
-            return array();
+            return new \ArrayIterator();
         }
 
-        return \str_split($this->string);
+        return new \ArrayIterator(\str_split($this->string));
     }
 
     public function offsetExists($offset)

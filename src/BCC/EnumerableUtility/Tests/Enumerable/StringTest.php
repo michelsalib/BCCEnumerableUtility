@@ -3,9 +3,17 @@
 namespace BCC\EnumerableUtilityUtility\Tests\Enumerable;
 
 use BCC\EnumerableUtility\String;
+use BCC\EnumerableUtility\Grouping;
 
-class StringTest extends \PHPUnit_Framework_TestCase
+include_once('EnumerableTestBase.php');
+
+class StringTest extends EnumerableTestBase
 {
+    protected function newInstance($param = null)
+    {
+        return new String($param);
+    }
+
     public function testConstructor()
     {
         $this->assertEquals('Hello', new String('Hello'));
@@ -20,6 +28,36 @@ class StringTest extends \PHPUnit_Framework_TestCase
     public function testConstructorException()
     {
         new String(10);
+    }
+
+    public function testDistinctWithObjects()
+    {
+        return; // String does not support Objects
+    }
+
+    public function testGroupByWithObjects()
+    {
+        return; // String does not support Objects
+    }
+
+    public function testGroupByWithSubObjects()
+    {
+        return; // String does not support Objects
+    }
+
+    public function testJoinWithObjects()
+    {
+        return; // String does not support Objects
+    }
+
+    public function testThenBy()
+    {
+        $this->markTestSkipped('Must be ported');
+    }
+
+    public function testThenByDescending()
+    {
+        $this->markTestSkipped('Must be ported');
     }
 
     public function testContains()

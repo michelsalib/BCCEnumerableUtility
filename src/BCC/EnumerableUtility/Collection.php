@@ -42,11 +42,15 @@ class Collection implements IEnumerable
     public function offsetSet($offset, $value)
     {
         $this->array[$offset] = $value;
+
+        $this->array = \array_values($this->array);
     }
 
     public function offsetUnset($offset)
     {
         unset($this->array[$offset]);
+
+        $this->array = \array_values($this->array);
     }
 
     public function add($item)
@@ -93,14 +97,12 @@ class Collection implements IEnumerable
         $index = $this->indexOf($item);
 
         if ($index !== -1) {
-            $this->removeAt($index);
+            $this->offsetUnset($index);
         }
     }
 
     public function removeAt($index)
     {
-        unset($this->array[$index]);
-
-        $this->array = \array_values($this->array);
+        $this->offsetUnset($index);
     }
 }

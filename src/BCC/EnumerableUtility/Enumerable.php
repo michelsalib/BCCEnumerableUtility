@@ -146,7 +146,6 @@ trait Enumerable
      */
     public function groupBy($selector)
     {
-        $class = __CLASS__;
         $compute = array();
         $result = array();
         $func = $this->resolveSelector($selector);
@@ -164,12 +163,11 @@ trait Enumerable
             $result[] = new Grouping($item['group'], $item['items']);
         }
 
-        return new $class($result);
+        return new Collection($result);
     }
 
     public function join($innerItems, $outerSelector, $innerSelector, $resultFunc)
     {
-        $class = __CLASS__;
         $result = array();
 
         $outerFunc = $this->resolveSelector($outerSelector);
@@ -178,13 +176,13 @@ trait Enumerable
         foreach ($this as $outer) {
             $outerKey = $outerFunc($outer);
             foreach ($innerItems as $inner) {
-                if ($outerKey === $innerFunc($inner)) {
+                if ($outerKey == $innerFunc($inner)) {
                     $result[] = $resultFunc($outer, $inner);
                 }
             }
         }
 
-        return new $class($result);
+        return new Collection($result);
     }
 
     public function last($func = null)
@@ -194,10 +192,6 @@ trait Enumerable
 
     public function max($selector = null)
     {
-        if ($selector === null) {
-            return \max($this->toArray());
-        }
-
         $result = null;
         $resultValue = null;
         $func = $this->resolveSelector($selector);
@@ -215,10 +209,6 @@ trait Enumerable
 
     public function min($selector = null)
     {
-        if ($selector === null) {
-            return \min($this->toArray());
-        }
-
         $result = null;
         $resultValue = PHP_INT_MAX;
         $func = $this->resolveSelector($selector);
