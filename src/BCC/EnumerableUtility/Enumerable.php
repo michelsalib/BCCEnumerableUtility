@@ -65,7 +65,7 @@ trait Enumerable
         return false;
     }
 
-    public function average($selector)
+    public function average($selector = null)
     {
         $func = $this->resolveSelector($selector);
 

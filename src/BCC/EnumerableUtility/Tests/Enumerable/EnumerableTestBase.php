@@ -63,7 +63,7 @@ abstract class EnumerableTestBase extends \PHPUnit_Framework_TestCase
     public function testAverage()
     {
         $enumerable = $this->newInstance(array(1, 2, 3));
-        $this->assertEquals(2, $enumerable->average($this->preClosure(function ($item) { return $item; })));
+        $this->assertEquals(2, $enumerable->average());
         $this->assertEquals(3, $enumerable->average($this->preClosure(function ($item) { return $item + 1; })));
     }
 
