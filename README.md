@@ -67,6 +67,7 @@ Here is the list of the current implemented functions:
 - orderByDescending: Orders the elements in a descending order, a selector might be used
 - reverse: Reverses the order of the elements
 - select: Projects every elements using a selector
+- selectMany: Project every elements using a selector and flattens the result
 - skip: Skips a number of elements
 - skipWhile: Skips elements while a closure is satisfied
 - sum: Computes the sum of the elements, a selector might be used

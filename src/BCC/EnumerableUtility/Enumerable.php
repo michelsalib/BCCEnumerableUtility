@@ -271,6 +271,24 @@ trait Enumerable
     }
 
     /**
+     * @param $selector
+     * @return Enumerable
+     */
+    public function selectMany($selector = null)
+    {
+        $class = __CLASS__;
+        $result = array();
+
+        $func = $this->resolveSelector($selector);
+
+        foreach (\array_map($func, $this->toArray()) as $subValue) {
+            $result = \array_merge($result, $subValue);
+        }
+
+        return new $class($result);
+    }
+
+    /**
      * @param $count
      * @return Enumerable
      */

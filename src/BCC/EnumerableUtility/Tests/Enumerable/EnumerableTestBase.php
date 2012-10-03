@@ -5,7 +5,6 @@ namespace BCC\EnumerableUtilityUtility\Tests\Enumerable;
 use Closure;
 use BCC\EnumerableUtility\Enumerable;
 use BCC\EnumerableUtility\IEnumerable;
-use BCC\EnumerableUtility\Collection;
 use BCC\EnumerableUtility\Grouping;
 use BCC\EnumerableUtility\Tests\Fixtures\Object;
 
@@ -229,6 +228,29 @@ abstract class EnumerableTestBase extends \PHPUnit_Framework_TestCase
     {
         $enumerable = $this->newInstance(array(1, 2, 3));
         $this->assertEquals(array(1, 4, 9), $enumerable->select($this->preClosure(function ($item) { return $item*$item;})));
+    }
+
+    public function testSelectMany()
+    {
+        $enumerable = $this->newInstance(array(1, 4, 7));
+        $this->assertEquals(array(1, 2, 3, 4, 5, 6, 7, 8, 9), $enumerable->selectMany($this->preClosure(function ($item) { return array($item, $item+1, $item+2);})));
+    }
+
+    public function testSelectManyWithObject()
+    {
+        $enumerable = $this->newInstance(array(
+                array(1, 2, 3),
+                array(4, 5, 6),
+                array(7, 8, 9),
+            ));
+        $this->assertEquals(array(1, 2, 3, 4, 5, 6, 7, 8, 9), $enumerable->selectMany());
+
+        $enumerable = $this->newInstance(array(
+                new Object(array(1, 2, 3), null),
+                new Object(array(4, 5, 6), null),
+                new Object(array(7, 8, 9), null),
+            ));
+        $this->assertEquals(array(1, 2, 3, 4, 5, 6, 7, 8, 9), $enumerable->selectMany($this->preClosure(function (Object $item) { return $item->a;})));
     }
 
     public function testSkip()

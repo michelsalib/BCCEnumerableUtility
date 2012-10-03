@@ -24,7 +24,7 @@ class CollectionTest extends EnumerableTestBase
     }
 
     /**
-     * @expectedException InvalidArgumentException
+     * @expectedException \InvalidArgumentException
      */
     public function testConstructorException()
     {

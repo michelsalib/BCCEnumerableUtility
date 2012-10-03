@@ -2,9 +2,8 @@
 
 namespace BCC\EnumerableUtilityUtility\Tests\Enumerable;
 
-use BCC\EnumerableUtility\Dictionary;
 use Closure;
-use BCC\EnumerableUtility\Tests\Fixtures\Object;
+use BCC\EnumerableUtility\Dictionary;
 use BCC\EnumerableUtility\Grouping;
 use BCC\EnumerableUtility\KeyValuePair;
 
@@ -74,7 +73,7 @@ class DictionaryTest extends EnumerableTestBase
     }
 
     /**
-     * @expectedException InvalidArgumentException
+     * @expectedException \InvalidArgumentException
      */
     public function testConstructorException()
     {

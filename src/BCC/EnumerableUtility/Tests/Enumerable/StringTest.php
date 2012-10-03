@@ -50,6 +50,11 @@ class StringTest extends EnumerableTestBase
         return; // String does not support Objects
     }
 
+    public function testSelectManyWithObject()
+    {
+        return; // String does not support Objects
+    }
+
     public function testThenByWithObject()
     {
         return; // String does not support Objects

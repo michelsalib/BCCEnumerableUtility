@@ -17,7 +17,7 @@ interface IEnumerable extends \IteratorAggregate, \ArrayAccess, \Countable
     public function count($func = null);
 
     /**
-     * @param null $func
+     * @param null $selector
      * @return IEnumerable
      */
     public function distinct($selector = null);
@@ -27,7 +27,7 @@ interface IEnumerable extends \IteratorAggregate, \ArrayAccess, \Countable
     public function first($func = null);
 
     /**
-     * @param null $func
+     * @param null $selector
      * @return IEnumerable
      */
     public function groupBy($selector);
@@ -48,13 +48,13 @@ interface IEnumerable extends \IteratorAggregate, \ArrayAccess, \Countable
     public function min($selector = null);
 
     /**
-     * @param null $func
+     * @param null $selector
      * @return IEnumerable
      */
     public function orderBy($selector = null);
 
     /**
-     * @param null $func
+     * @param null $selector
      * @return IEnumerable
      */
     public function orderByDescending($selector = null);
@@ -66,10 +66,16 @@ interface IEnumerable extends \IteratorAggregate, \ArrayAccess, \Countable
     public function reverse();
 
     /**
-     * @param $func
+     * @param $selector
      * @return IEnumerable
      */
     public function select($selector);
+
+    /**
+     * @param null $selector
+     * @return IEnumerable
+     */
+    public function selectMany($selector = null);
 
     /**
      * @param $count
@@ -78,7 +84,7 @@ interface IEnumerable extends \IteratorAggregate, \ArrayAccess, \Countable
     public function skip($count);
 
     /**
-     * @param $count
+     * @param $func
      * @return IEnumerable
      */
     public function skipWhile($func);
@@ -92,19 +98,19 @@ interface IEnumerable extends \IteratorAggregate, \ArrayAccess, \Countable
     public function take($count);
 
     /**
-     * @param $count
+     * @param $func
      * @return IEnumerable
      */
     public function takeWhile($func);
 
     /**
-     * @param null $func
+     * @param null $selector
      * @return IEnumerable
      */
     public function thenBy($selector = null);
 
     /**
-     * @param null $func
+     * @param null $selector
      * @return IEnumerable
      */
     public function thenByDescending($selector = null);
@@ -116,7 +122,7 @@ interface IEnumerable extends \IteratorAggregate, \ArrayAccess, \Countable
     public function toArray();
 
     /**
-     * @param $count
+     * @param $func
      * @return IEnumerable
      */
     public function where($func);
