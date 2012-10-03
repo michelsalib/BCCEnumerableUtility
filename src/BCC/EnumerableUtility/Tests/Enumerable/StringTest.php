@@ -169,7 +169,10 @@ class StringTest extends EnumerableTestBase
     public function testReplace()
     {
         $string = new String('Hello world!');
+
         $this->assertEquals('Hello pineapple!', $string->replace('world', 'pineapple'));
+        $this->assertEquals('Hello world!', $string->replace('World', 'pineapple'));
+        $this->assertEquals('Hello pineapple!', $string->replace('World', 'pineapple', true));
     }
 
     public function testSplit()

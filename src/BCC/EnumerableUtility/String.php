@@ -196,9 +196,14 @@ class String implements IEnumerable
         return new String($first.$second);
     }
 
-    public function replace($old, $new)
+    public function replace($old, $new, $ignoreCase = false)
     {
-        return new String(\str_replace($old, $new, $this->string));
+        if ($ignoreCase) {
+            return new String(\str_ireplace($old, $new, $this->string));
+        }
+        else {
+            return new String(\str_replace($old, $new, $this->string));
+        }
     }
 
     public function split($separator)
