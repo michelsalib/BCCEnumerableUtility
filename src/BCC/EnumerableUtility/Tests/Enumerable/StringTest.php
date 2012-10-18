@@ -220,7 +220,7 @@ class StringTest extends EnumerableTestBase
         $this->assertEquals('Hello world!...', $string->padRight(15, '.'));
 
         $string = new String('café');
-        $this->assertEquals('café  ', $string->padRight(7));
+        $this->assertEquals('café   ', $string->padRight(7));
     }
 
     public function testRemove()

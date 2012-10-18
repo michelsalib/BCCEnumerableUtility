@@ -187,7 +187,7 @@ class String implements IEnumerable
 
     public function padRight($totalWidth, $paddingChar = ' ')
     {
-        return new String(\str_pad($this->string, $totalWidth, $paddingChar, STR_PAD_RIGHT));
+        return new String(str_pad($this->string, strlen($this->string)- mb_strlen($this->string) + $totalWidth, $paddingChar, STR_PAD_RIGHT));
     }
 
     public function remove($startIndex, $count = null)
