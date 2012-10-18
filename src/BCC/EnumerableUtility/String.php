@@ -42,7 +42,14 @@ class String implements IEnumerable
             return new \ArrayIterator();
         }
 
-        return new \ArrayIterator(\str_split($this->string));
+        $length = mb_strlen($this->string);
+        $result = array();
+        for($i = 0; $i < $length; $i++)
+        {
+            $result[] = mb_substr($this->string, $i, 1);
+        }
+
+        return new \ArrayIterator($result);
     }
 
     public function offsetExists($offset)
@@ -74,10 +81,10 @@ class String implements IEnumerable
     public function contains($value, $ignoreCase = false)
     {
         if ($ignoreCase) {
-            $pos = \stripos($this->string, $value);
+            $pos = \mb_stripos($this->string, $value);
         }
         else {
-            $pos = \strpos($this->string, $value);
+            $pos = \mb_strpos($this->string, $value);
         }
 
         return $pos !== false;
@@ -175,7 +182,7 @@ class String implements IEnumerable
 
     public function padLeft($totalWidth, $paddingChar = ' ')
     {
-        return new String(\str_pad($this->string, $totalWidth, $paddingChar, STR_PAD_LEFT));
+        return new String(str_pad($this->string, strlen($this->string)- mb_strlen($this->string) + $totalWidth, $paddingChar, STR_PAD_LEFT));
     }
 
     public function padRight($totalWidth, $paddingChar = ' ')
@@ -185,13 +192,13 @@ class String implements IEnumerable
 
     public function remove($startIndex, $count = null)
     {
-        $first = \substr($this->string, 0, $startIndex);
+        $first = mb_substr($this->string, 0, $startIndex);
 
         if ($count === null) {
             return new String($first);
         }
 
-        $second = \substr($this->string, $startIndex + $count);
+        $second = mb_substr($this->string, $startIndex + $count);
 
         return new String($first.$second);
     }
@@ -214,10 +221,10 @@ class String implements IEnumerable
     public function subString($startIndex, $length = null)
     {
         if ($length === null) {
-            return new String(\substr($this->string, (string)$startIndex));
+            return new String(mb_substr($this->string, (string)$startIndex));
         }
 
-        return new String(\substr($this->string, (string)$startIndex, $length));
+        return new String(mb_substr($this->string, (string)$startIndex, $length));
     }
 
     public function toLower()
