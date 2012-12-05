@@ -3,32 +3,74 @@
 namespace BCC\EnumerableUtility;
 
 use BCC\EnumerableUtility\Util\PropertyPath;
+use LogicException;
+use Iterator;
 
 trait Enumerable
 {
+    /**
+     * @var array
+     */
     protected $orderSequence   = array();
+
+    /**
+     * @var array
+     */
     protected $orderAscending  = true;
+
+    /**
+     * @var array
+     */
     protected $orderDescending = false;
 
     /**
      * @abstract
-     * @return \Iterator
+     * @return Iterator
      */
     public abstract function getIterator();
 
+    /**
+     * @param $offset
+     *
+     * @return bool
+     */
     public abstract function offsetExists($offset);
 
+    /**
+     * @param $offset
+     *
+     * @return mixed
+     */
     public abstract function offsetGet($offset);
 
+    /**
+     * @param $offset
+     * @param $value
+     *
+     * @return mixed
+     */
     public abstract function offsetSet($offset, $value);
 
+    /**
+     * @param $offset
+     *
+     * @return mixed
+     */
     public abstract function offsetUnset($offset);
 
+    /**
+     * @return array
+     */
     public function toArray()
     {
         return (array) $this->getIterator();
     }
 
+    /**
+     * @param callable $func
+     *
+     * @return mixed
+     */
     public function aggregate($func)
     {
         $result = null;
@@ -39,6 +81,11 @@ trait Enumerable
         return $result;
     }
 
+    /**
+     * @param callable $func
+     *
+     * @return bool
+     */
     public function all($func)
     {
         foreach ($this as $item) {
@@ -51,6 +98,11 @@ trait Enumerable
         return true;
     }
 
+    /**
+     * @param callable $func
+     *
+     * @return bool
+     */
     public function any($func = null)
     {
         $func = $func ?: function() { return true; };
@@ -65,6 +117,11 @@ trait Enumerable
         return false;
     }
 
+    /**
+     * @param string|callable $selector
+     *
+     * @return float
+     */
     public function average($selector = null)
     {
         $func = $this->resolveSelector($selector);
@@ -74,9 +131,14 @@ trait Enumerable
             $result[] = $func($item);
         }
 
-        return \array_sum($result) / \count($result);
+        return array_sum($result) / count($result);
     }
 
+    /**
+     * @param mixed $value
+     *
+     * @return bool
+     */
     public function contains($value)
     {
         foreach ($this as $item) {
@@ -89,6 +151,11 @@ trait Enumerable
         return false;
     }
 
+    /**
+     * @param callable $func
+     *
+     * @return int
+     */
     public function count($func = null)
     {
         $func = $func ?: function () { return true; };
@@ -103,6 +170,11 @@ trait Enumerable
         return $result;
     }
 
+    /**
+     * @param string|callable $selector
+     *
+     * @return IEnumerable
+     */
     public function distinct($selector = null)
     {
         $class = __CLASS__;
@@ -112,7 +184,7 @@ trait Enumerable
 
         foreach ($this as $item) {
             $distinctKey = $func($item);
-            if (!\in_array($distinctKey, $distinct)) {
+            if (!in_array($distinctKey, $distinct)) {
                 $distinct[] = $distinctKey;
                 $result[] = $item;
             }
@@ -121,11 +193,21 @@ trait Enumerable
         return new $class($result);
     }
 
+    /**
+     * @param mixed $index
+     *
+     * @return mixed
+     */
     public function elementAt($index)
     {
         return $this[$index];
     }
 
+    /**
+     * @param callable $func
+     *
+     * @return mixed
+     */
     public function first($func = null)
     {
         $func = $func ?: function () { return true; };
@@ -141,8 +223,9 @@ trait Enumerable
     }
 
     /**
-     * @param null $func
-     * @return Enumerable
+     * @param callable $func
+     *
+     * @return IEnumerable
      */
     public function groupBy($selector)
     {
@@ -152,7 +235,7 @@ trait Enumerable
 
         foreach ($this as $item) {
             $group = $func($item);
-            $key = is_object($group) ? \spl_object_hash($group) : $group;
+            $key = is_object($group) ? spl_object_hash($group) : $group;
             if (!isset($compute[$key])) {
                 $compute[$key] = array('group' => $group, 'items' => array());
             }
@@ -166,6 +249,14 @@ trait Enumerable
         return new Collection($result);
     }
 
+    /**
+     * @param Iterator $innerItems
+     * @param callable $outerSelector
+     * @param callable $innerSelector
+     * @param callable $resultFunc
+     *
+     * @return Collection
+     */
     public function join($innerItems, $outerSelector, $innerSelector, $resultFunc)
     {
         $result = array();
@@ -185,11 +276,21 @@ trait Enumerable
         return new Collection($result);
     }
 
+    /**
+     * @param callable $func
+     *
+     * @return mixed
+     */
     public function last($func = null)
     {
         return $this->reverse()->first($func);
     }
 
+    /**
+     * @param callable|string $selector
+     *
+     * @return mixed
+     */
     public function max($selector = null)
     {
         $result = null;
@@ -207,6 +308,11 @@ trait Enumerable
         return $result;
     }
 
+    /**
+     * @param callable|string $selector
+     *
+     * @return mixed
+     */
     public function min($selector = null)
     {
         $result = null;
@@ -225,8 +331,9 @@ trait Enumerable
     }
 
     /**
-     * @param null $selector
-     * @return Enumerable
+     * @param callable|string $selector
+     *
+     * @return IEnumerable
      */
     public function orderBy($selector = null)
     {
@@ -236,8 +343,9 @@ trait Enumerable
     }
 
     /**
-     * @param null $selector
-     * @return Enumerable
+     * @param callable|string $selector
+     *
+     * @return IEnumerable
      */
     public function orderByDescending($selector = null)
     {
@@ -247,19 +355,19 @@ trait Enumerable
     }
 
     /**
-     * @param $string
-     * @return Enumerable
+     * @return IEnumerable
      */
     public function reverse()
     {
         $class = __CLASS__;
 
-        return new $class(\array_reverse($this->toArray()));
+        return new $class(array_reverse($this->toArray()));
     }
 
     /**
-     * @param $selector
-     * @return Enumerable
+     * @param callable $selector
+     *
+     * @return IEnumerable
      */
     public function select($selector)
     {
@@ -267,12 +375,13 @@ trait Enumerable
 
         $func = $this->resolveSelector($selector);
 
-        return new $class(\array_map($func, $this->toArray()));
+        return new $class(array_map($func, $this->toArray()));
     }
 
     /**
-     * @param $selector
-     * @return Enumerable
+     * @param callable $selector
+     *
+     * @return IEnumerable
      */
     public function selectMany($selector = null)
     {
@@ -281,27 +390,29 @@ trait Enumerable
 
         $func = $this->resolveSelector($selector);
 
-        foreach (\array_map($func, $this->toArray()) as $subValue) {
-            $result = \array_merge($result, $subValue);
+        foreach (array_map($func, $this->toArray()) as $subValue) {
+            $result = array_merge($result, $subValue);
         }
 
         return new $class($result);
     }
 
     /**
-     * @param $count
-     * @return Enumerable
+     * @param int $count
+     *
+     * @return IEnumerable
      */
     public function skip($count)
     {
         $class = __CLASS__;
 
-        return new $class(\array_slice($this->toArray(), $count));
+        return new $class(array_slice($this->toArray(), $count));
     }
 
     /**
-     * @param $count
-     * @return Enumerable
+     * @param callable $func
+     *
+     * @return IEnumerable
      */
     public function skipWhile($func)
     {
@@ -322,6 +433,11 @@ trait Enumerable
         return new $class($result);
     }
 
+    /**
+     * @param callable|string $selector
+     *
+     * @return float
+     */
     public function sum($selector = null)
     {
         $func = $this->resolveSelector($selector);
@@ -336,18 +452,21 @@ trait Enumerable
 
 
     /**
-     * @param $count
-     * @return Enumerable
+     * @param int $count
+     *
+     * @return IEnumerable
      */
     public function take($count)
     {
         $class = __CLASS__;
-        return new $class(\array_slice($this->toArray(), 0, $count));
+
+        return new $class(array_slice($this->toArray(), 0, $count));
     }
 
     /**
-     * @param $count
-     * @return Enumerable
+     * @param callable $func
+     *
+     * @return IEnumerable
      */
     public function takeWhile($func)
     {
@@ -365,8 +484,9 @@ trait Enumerable
     }
 
     /**
-     * @param null $func
-     * @return Enumerable
+     * @param callable|string $selector
+     *
+     * @return IEnumerable
      */
     public function thenBy($selector = null)
     {
@@ -378,8 +498,9 @@ trait Enumerable
     }
 
     /**
-     * @param null $func
-     * @return Enumerable
+     * @param callable|string $selector
+     *
+     * @return IEnumerable
      */
     public function thenByDescending($selector = null)
     {
@@ -391,8 +512,9 @@ trait Enumerable
     }
 
     /**
-     * @param $count
-     * @return Enumerable
+     * @param callable $func
+     *
+     * @return IEnumerable
      */
     public function where($func)
     {
@@ -408,6 +530,11 @@ trait Enumerable
         return new $class($result);
     }
 
+    /**
+     * @param array $sequence
+     *
+     * @return IEnumerable
+     */
     protected function order(array $sequence)
     {
         $result = array();
@@ -417,7 +544,7 @@ trait Enumerable
             $result[] = $item;
         }
 
-        \usort($result, function ($a, $b) use ($sequence) {
+        usort($result, function ($a, $b) use ($sequence) {
             foreach ($sequence as $order) {
                 $aValue = $order['func']($a);
                 $bValue = $order['func']($b);
@@ -438,20 +565,27 @@ trait Enumerable
         return $resultObject;
     }
 
+    /**
+     * @param callable|string $selector
+     *
+     * @return callable
+     *
+     * @throws LogicException
+     */
     protected function resolveSelector($selector = null)
     {
         if ($selector === null) {
             return function ($item) { return $item; };
         }
-        if (\is_callable($selector)) {
+        if (is_callable($selector)) {
             return $selector;
         }
-        if (\is_string($selector)) {
+        if (is_string($selector)) {
             $propertyPath = new PropertyPath($selector);
 
             return function($item) use ($propertyPath) { return $propertyPath->getValue($item); };
         }
 
-        throw new \LogicException('Selector cannot be resolved');
+        throw new LogicException('Selector cannot be resolved');
     }
 }

@@ -4,125 +4,199 @@ namespace BCC\EnumerableUtility;
 
 interface IEnumerable extends \IteratorAggregate, \ArrayAccess, \Countable
 {
+    /**
+     * @param callable $func
+     *
+     * @return mixed
+     */
     public function aggregate($func);
 
+    /**
+     * @param callable $func
+     *
+     * @return bool
+     */
     public function all($func);
 
+    /**
+     * @param callable|string $func
+     *
+     * @return bool
+     */
     public function any($func = null);
 
+    /**
+     * @param callable|string $selector
+     *
+     * @return float
+     */
     public function average($selector);
 
+    /**
+     * @param mixed $value
+     *
+     * @return bool
+     */
     public function contains($value);
 
+    /**
+     * @param callable $func
+     *
+     * @return int
+     */
     public function count($func = null);
 
     /**
-     * @param null $selector
+     * @param callable|string $selector
+     *
      * @return IEnumerable
      */
     public function distinct($selector = null);
 
+    /**
+     * @param mixed $index
+     *
+     * @return mixed
+     */
     public function elementAt($index);
 
+    /**
+     * @param callable $func
+     *
+     * @return mixed
+     */
     public function first($func = null);
 
     /**
-     * @param null $selector
+     * @param string|callable $selector
+     *
      * @return IEnumerable
      */
     public function groupBy($selector);
 
     /**
-     * @param $innerItems
-     * @param $outerSelector
-     * @param $innerSelector
-     * @param $resultFunc
+     * @param Iterator $innerItems
+     * @param callable $outerSelector
+     * @param callable $innerSelector
+     * @param callable $resultFunc
+     *
      * @return IEnumerable
      */
     public function join($innerItems, $outerSelector, $innerSelector, $resultFunc);
 
+    /**
+     * @param callable $func
+     *
+     * @return mixed
+     */
     public function last($func = null);
 
+    /**
+     * @param callable|string $selector
+     *
+     * @return mixed
+     */
     public function max($selector = null);
 
+    /**
+     * @param callable|string $selector
+     *
+     * @return mixed
+     */
     public function min($selector = null);
 
     /**
-     * @param null $selector
+     * @param callable|string $selector
+     *
      * @return IEnumerable
      */
     public function orderBy($selector = null);
 
     /**
-     * @param null $selector
+     * @param callable|string $selector
+     *
      * @return IEnumerable
      */
     public function orderByDescending($selector = null);
 
     /**
-     * @param $string
      * @return IEnumerable
      */
     public function reverse();
 
     /**
-     * @param $selector
+     * @param callable|string $selector
+     *
      * @return IEnumerable
      */
     public function select($selector);
 
     /**
-     * @param null $selector
+     * @param callable|string $selector
+     *
      * @return IEnumerable
      */
     public function selectMany($selector = null);
 
     /**
-     * @param $count
+     * @param int $count
+     *
      * @return IEnumerable
      */
     public function skip($count);
 
     /**
-     * @param $func
+     * @param callable $func
+     *
      * @return IEnumerable
      */
     public function skipWhile($func);
 
+    /**
+     * @param callable|string $selector
+     *
+     * @return float
+     */
     public function sum($selector = null);
 
     /**
-     * @param $count
+     * @param int $count
+     *
      * @return IEnumerable
      */
     public function take($count);
 
     /**
-     * @param $func
+     * @param callable $func
+     *
      * @return IEnumerable
      */
     public function takeWhile($func);
 
     /**
-     * @param null $selector
+     * @param callable|string $selector
+     *
      * @return IEnumerable
      */
     public function thenBy($selector = null);
 
     /**
-     * @param null $selector
+     * @param callable|string $selector
+     *
      * @return IEnumerable
      */
     public function thenByDescending($selector = null);
 
     /**
      * @abstract
+     *
      * @return array
      */
     public function toArray();
 
     /**
-     * @param $func
+     * @param callable $func
+     *
      * @return IEnumerable
      */
     public function where($func);

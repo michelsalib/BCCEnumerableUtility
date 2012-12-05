@@ -4,6 +4,9 @@ namespace BCC\EnumerableUtility;
 
 class Grouping extends Collection
 {
+    /**
+     * @var mixed
+     */
     private $key;
 
     function __construct($key, $array = null)
@@ -12,6 +15,9 @@ class Grouping extends Collection
         $this->key = $key;
     }
 
+    /**
+     * @return mixed
+     */
     public function getKey()
     {
         return $this->key;
