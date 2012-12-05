@@ -4,6 +4,7 @@ namespace BCC\EnumerableUtility;
 
 use Traversable;
 use ArrayIterator;
+use InvalidArgumentException;
 
 class Dictionary implements IEnumerable
 {
