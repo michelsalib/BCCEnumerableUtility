@@ -5,6 +5,7 @@ namespace BCC\EnumerableUtility;
 use BCC\EnumerableUtility\Util\PropertyPath;
 use LogicException;
 use Iterator;
+use InvalidArgumentException;
 
 trait Enumerable
 {
@@ -121,6 +122,8 @@ trait Enumerable
      * @param string|callable $selector
      *
      * @return float
+     *
+     * @throws InvalidArgumentException
      */
     public function average($selector = null)
     {
@@ -129,6 +132,10 @@ trait Enumerable
         $result = array();
         foreach ($this as $item) {
             $result[] = $func($item);
+        }
+
+        if (0 === count($result)) {
+            throw new InvalidArgumentException('Enumerable has no element');
         }
 
         return array_sum($result) / count($result);

@@ -66,6 +66,16 @@ abstract class EnumerableTestBase extends \PHPUnit_Framework_TestCase
         $this->assertEquals(3, $enumerable->average($this->preClosure(function ($item) { return $item + 1; })));
     }
 
+    /**
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage Enumerable has no element
+     */
+    public function testAverageWithEmptyEnumerable()
+    {
+        $enumerable = $this->newInstance(array());
+        $enumerable->average();
+    }
+
     public function testCount()
     {
         $enumerable = $this->newInstance(array(1, 2, 3));

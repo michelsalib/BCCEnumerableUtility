@@ -2,6 +2,8 @@
 
 namespace BCC\EnumerableUtility;
 
+use InvalidArgumentException;
+
 interface IEnumerable extends \IteratorAggregate, \ArrayAccess, \Countable
 {
     /**
@@ -29,6 +31,8 @@ interface IEnumerable extends \IteratorAggregate, \ArrayAccess, \Countable
      * @param callable|string $selector
      *
      * @return float
+     *
+     * @throws InvalidArgumentException
      */
     public function average($selector);
 
