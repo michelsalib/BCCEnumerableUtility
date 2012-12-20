@@ -3,8 +3,12 @@
 namespace BCC\EnumerableUtility;
 
 use InvalidArgumentException;
+use IteratorAggregate;
+use ArrayAccess;
+use Countable;
+use LogicException;
 
-interface IEnumerable extends \IteratorAggregate, \ArrayAccess, \Countable
+interface IEnumerable extends IteratorAggregate, ArrayAccess, Countable
 {
     /**
      * @param callable $func
@@ -34,7 +38,7 @@ interface IEnumerable extends \IteratorAggregate, \ArrayAccess, \Countable
      *
      * @throws InvalidArgumentException
      */
-    public function average($selector);
+    public function average($selector = null);
 
     /**
      * @param mixed $value
@@ -192,11 +196,19 @@ interface IEnumerable extends \IteratorAggregate, \ArrayAccess, \Countable
     public function thenByDescending($selector = null);
 
     /**
-     * @abstract
-     *
      * @return array
      */
     public function toArray();
+
+    /**
+     * @param callable|string $keySelector
+     * @param callable|string $valueSelector
+     *
+     * @throws LogicException
+     *
+     * @return Dictionary
+     */
+    public function toDictionary($keySelector, $valueSelector = null);
 
     /**
      * @param callable $func

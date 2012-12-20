@@ -3,7 +3,6 @@
 namespace BCC\EnumerableUtilityUtility\Tests\Enumerable;
 
 use BCC\EnumerableUtility\String;
-use BCC\EnumerableUtility\Grouping;
 
 include_once('EnumerableTestBase.php');
 
@@ -69,6 +68,11 @@ class StringTest extends EnumerableTestBase
     }
 
     public function testThenByDescendingWithObject()
+    {
+        return; // String does not support Objects
+    }
+
+    public function testToDictionaryWithObject()
     {
         return; // String does not support Objects
     }
@@ -281,7 +285,7 @@ class StringTest extends EnumerableTestBase
         $this->assertEquals('hello world!', $string->toLower());
 
         $string = new String('Thé et Café');
-        $this->assertEquals('thé et café', $string->toLower());
+        $this->assertEquals('thé et café', (string)$string->toLower());
     }
 
     public function testToUpper()
@@ -290,7 +294,7 @@ class StringTest extends EnumerableTestBase
         $this->assertEquals('HELLO WORLD!', $string->toUpper());
 
         $string = new String('Thé et Café');
-        $this->assertEquals('THé ET CAFé', $string->toUpper());
+        $this->assertEquals('THÉ ET CAFÉ', $string->toUpper());
     }
 
     public function testToCharArray()

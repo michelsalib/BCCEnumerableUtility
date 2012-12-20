@@ -75,6 +75,7 @@ Here is the list of the current implemented functions:
 - takeWhile: Takes elements while a closure is satisfied
 - thenBy: Appends sub order, a selector might be used
 - thenByDescending: Appends sub descending order, a selector might be used
+- toDictionnary: Transform the enumerable to a dictionary, a key selector is required and a value selector might be used
 - where: Reduces the set of elements using a closure
 
 Note that the functions returns an instance of the calling class when applicable.

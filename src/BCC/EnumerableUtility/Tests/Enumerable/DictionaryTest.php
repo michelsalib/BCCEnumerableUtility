@@ -6,6 +6,7 @@ use Closure;
 use BCC\EnumerableUtility\Dictionary;
 use BCC\EnumerableUtility\Grouping;
 use BCC\EnumerableUtility\KeyValuePair;
+use BCC\EnumerableUtility\Collection;
 
 include_once('EnumerableTestBase.php');
 
@@ -19,21 +20,21 @@ class DictionaryTest extends EnumerableTestBase
     protected function preClosure(Closure $func)
     {
         return function() use ($func) {
-            $args = \func_get_args();
+            $args = func_get_args();
             foreach ($args as $key => $arg) {
                 if ($arg instanceof KeyValuePair) {
                     $args[$key] = $arg->getValue();
                 }
             }
 
-            return \call_user_func_array($func, $args);
+            return call_user_func_array($func, $args);
         };
     }
 
     public static function assertEquals($expected, $actual, $message = '', $delta = 0, $maxDepth = 10, $canonicalize = FALSE, $ignoreCase = FALSE)
     {
         /** @var $actual Dictionary */
-        if (\is_array($expected) && $actual instanceof Dictionary) {
+        if (is_array($expected) && $actual instanceof Dictionary) {
             $actual = $actual->values();
         }
 
@@ -41,18 +42,23 @@ class DictionaryTest extends EnumerableTestBase
             $actual = $actual->getValue();
         }
 
-        if (\is_array($expected) && isset($actual[0]) && $actual[0] instanceof Grouping) {
+        if (is_array($expected) && isset($actual[0]) && $actual[0] instanceof Grouping) {
             foreach ($actual as $group) {
                 $values = $group->toArray();
                 $group->clear();
-                $group->addRange(\array_map(function (KeyValuePair $item) { return $item->getValue(); }, $values));
+                $group->addRange(array_map(function (KeyValuePair $item) { return $item->getValue(); }, $values));
             }
+        }
+
+        if (is_array($expected) && isset($actual[0]) && $actual[0] instanceof KeyValuePair) {
+            $actual = new Collection($actual);
+            $actual = $actual->select('value')->toArray();
         }
 
         if ($expected instanceof Grouping) {
             $values = $actual->toArray();
             $actual->clear();
-            $actual->addRange(\array_map(function (KeyValuePair $item) { return $item->getValue(); }, $values));
+            $actual->addRange(array_map(function (KeyValuePair $item) { return $item->getValue(); }, $values));
         }
 
         parent::assertEquals($expected, $actual, $message, $delta, $maxDepth, $canonicalize, $ignoreCase);

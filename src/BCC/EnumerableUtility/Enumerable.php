@@ -519,6 +519,33 @@ trait Enumerable
     }
 
     /**
+     * @param callable|string $keySelector
+     * @param callable|string $valueSelector
+     *
+     * @throws LogicException
+     *
+     * @return Dictionary
+     */
+    public function toDictionary($keySelector, $valueSelector = null)
+    {
+        $result = new Dictionary();
+        $keyFunc = $this->resolveSelector($keySelector);
+        $valueFunc = $this->resolveSelector($valueSelector);
+
+        foreach ($this as $item) {
+            $key = $keyFunc($item);
+
+            if ($result->containsKey($key)) {
+                throw new LogicException(sprintf('Key selection produces duplicated elements "%s".', $key));
+            }
+
+            $result->add($keyFunc($item), $valueFunc($item));
+        }
+
+        return $result;
+    }
+
+    /**
      * @param callable $func
      *
      * @return IEnumerable

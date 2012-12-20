@@ -2,18 +2,20 @@
 
 namespace BCC\EnumerableUtilityUtility\Tests\Enumerable;
 
+use InvalidArgumentException;
+use LogicException;
 use Closure;
-use BCC\EnumerableUtility\Enumerable;
 use BCC\EnumerableUtility\IEnumerable;
 use BCC\EnumerableUtility\Grouping;
 use BCC\EnumerableUtility\Tests\Fixtures\Object;
+use PHPUnit_Framework_TestCase;
 
-abstract class EnumerableTestBase extends \PHPUnit_Framework_TestCase
+abstract class EnumerableTestBase extends PHPUnit_Framework_TestCase
 {
     /**
      * @abstract
-     * @param null $param
-     * @return Enumerable
+     * @param  null        $param
+     * @return IEnumerable
      */
     protected abstract function newInstance($param = null);
 
@@ -25,7 +27,7 @@ abstract class EnumerableTestBase extends \PHPUnit_Framework_TestCase
     public static function assertEquals($expected, $actual, $message = '', $delta = 0, $maxDepth = 10, $canonicalize = FALSE, $ignoreCase = FALSE)
     {
         /** @var $actual String */
-        if (\is_array($expected) && $actual instanceof IEnumerable) {
+        if (is_array($expected) && $actual instanceof IEnumerable) {
             $actual = $actual->toArray();
         }
 
@@ -67,7 +69,7 @@ abstract class EnumerableTestBase extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \InvalidArgumentException
+     * @expectedException        InvalidArgumentException
      * @expectedExceptionMessage Enumerable has no element
      */
     public function testAverageWithEmptyEnumerable()
@@ -344,6 +346,65 @@ abstract class EnumerableTestBase extends \PHPUnit_Framework_TestCase
         $this->assertEquals(array(1, 2, 3), $collection);
     }
 
+    public function testToDictionary()
+    {
+        $collection = $this->newInstance(array(1, 2, 3));
+
+        $dictionary = $collection->toDictionary($this->preClosure(function($item) {
+            return $item * 2;
+        }));
+
+        $this->assertEquals(array(2, 4, 6), $dictionary->keys());
+        $this->assertEquals(array(1, 2, 3), $dictionary->values());
+
+        $dictionary = $collection->toDictionary($this->preClosure(function($item) {
+            return $item * 2;
+        }), $this->preClosure(function($item) {
+            return $item * 4;
+        }));
+
+        $this->assertEquals(array(2, 4, 6), $dictionary->keys());
+        $this->assertEquals(array(4, 8, 12), $dictionary->values());
+    }
+
+    public function testToDictionaryWithObject()
+    {
+        $obj1 = new Object('a', 123);
+        $obj2 = new Object('b', 456);
+        $obj3 = new Object('c', 789);
+
+        $enumerable = $this->newInstance(array($obj1, $obj2, $obj3));
+
+        $dictionary = $enumerable->toDictionary($this->preClosure(function(Object $item) {
+            return $item->a;
+        }));
+
+        $this->assertEquals(array('a', 'b', 'c'), $dictionary->keys());
+        $this->assertEquals(array($obj1, $obj2, $obj3), $dictionary->values());
+
+        $dictionary = $enumerable->toDictionary($this->preClosure(function(Object $item) {
+            return $item->a;
+        }), $this->preClosure(function(Object $item) {
+            return $item->b;
+        }));
+
+        $this->assertEquals(array('a', 'b', 'c'), $dictionary->keys());
+        $this->assertEquals(array(123, 456, 789), $dictionary->values());
+    }
+
+    /**
+     * @expectedException        LogicException
+     * @expectedExceptionMessage Key selection produces duplicated elements "1".
+     */
+    public function testToDictionaryFailsWithKeyCollision()
+    {
+        $collection = $this->newInstance(array(1, 2, 3));
+
+        $collection->toDictionary($this->preClosure(function($item) {
+            return $item%2;
+        }));
+    }
+
     public function testWhere()
     {
         $enumerable = $this->newInstance(array(1, 2, 3));
@@ -360,7 +421,7 @@ abstract class EnumerableTestBase extends \PHPUnit_Framework_TestCase
     {
         $enumerable = $this->newInstance(array(1, 2, 3));
 
-        $result = \call_user_func_array(array($enumerable, $function), \array_slice(\func_get_args(), 1));
+        $result = call_user_func_array(array($enumerable, $function), array_slice(func_get_args(), 1));
 
         $this->assertEquals(array(1, 2, 3), $enumerable);
         $this->assertNotSame($enumerable, $result);
@@ -397,6 +458,7 @@ abstract class EnumerableTestBase extends \PHPUnit_Framework_TestCase
             array('takeWhile', $this->func()),
             array('thenBy', $this->func()),
             array('thenByDescending', $this->func()),
+            array('toDictionary', $this->func()),
             array('where', $this->func()),
         );
     }
@@ -430,6 +492,7 @@ abstract class EnumerableTestBase extends \PHPUnit_Framework_TestCase
             array('thenBy', $this->func()),
             array('thenByDescending', $this->func()),
             array('toArray'),
+            array('toDictionary', $this->preClosure(function ($i) { return $i; })),
             array('where', $this->func()),
         );
     }

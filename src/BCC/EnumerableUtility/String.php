@@ -360,7 +360,7 @@ class String implements IEnumerable
      */
     public function toLower()
     {
-        return new String(strtolower($this->string));
+        return new String(mb_strtolower($this->string));
     }
 
     /**
@@ -368,7 +368,7 @@ class String implements IEnumerable
      */
     public function toUpper()
     {
-        return new String(strtoupper($this->string));
+        return new String(mb_strtoupper($this->string));
     }
 
     /**
