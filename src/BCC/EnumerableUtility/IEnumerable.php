@@ -62,6 +62,11 @@ interface IEnumerable extends IteratorAggregate, ArrayAccess, Countable
     public function distinct($selector = null);
 
     /**
+     * @param callable $func
+     */
+    public function each($func);
+
+    /**
      * @param mixed $index
      *
      * @return mixed

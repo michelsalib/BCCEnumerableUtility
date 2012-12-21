@@ -201,6 +201,19 @@ trait Enumerable
     }
 
     /**
+     * @param callable $func
+     *
+     * @return IEnumerable
+     */
+    public function each($func)
+    {
+        foreach ($this as $key => $item) {
+            $func($item);
+            $this[$key] = $item;
+        }
+    }
+
+    /**
      * @param mixed $index
      *
      * @return mixed
@@ -230,7 +243,7 @@ trait Enumerable
     }
 
     /**
-     * @param callable $func
+     * @param callable|string $selector
      *
      * @return IEnumerable
      */

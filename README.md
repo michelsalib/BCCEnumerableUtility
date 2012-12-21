@@ -56,6 +56,7 @@ Here is the list of the current implemented functions:
 - contains: Tells if the element is contains in the enumerable
 - count: Counts the number of elements
 - distinct: Reduces the set of elements to the distinct ones, a selector might be used
+- each: Apply a closure to the set of element, you can safely get the items by reference
 - elementAt: Gets the elements at a position
 - first: Gets the first elements, a closure might be used
 - groupBy: Groups the elements by Group, a selector that selects the group is needed

@@ -77,6 +77,11 @@ class StringTest extends EnumerableTestBase
         return; // String does not support Objects
     }
 
+    public function testEachWithObject()
+    {
+        return; // String does not support Objects
+    }
+
     public function testContains()
     {
         $string = new String('Hello world!');

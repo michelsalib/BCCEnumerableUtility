@@ -9,6 +9,7 @@ use BCC\EnumerableUtility\IEnumerable;
 use BCC\EnumerableUtility\Grouping;
 use BCC\EnumerableUtility\Tests\Fixtures\Object;
 use PHPUnit_Framework_TestCase;
+use BCC\EnumerableUtility\KeyValuePair;
 
 abstract class EnumerableTestBase extends PHPUnit_Framework_TestCase
 {
@@ -101,6 +102,27 @@ abstract class EnumerableTestBase extends PHPUnit_Framework_TestCase
         $enumerable = $this->newInstance(array($obj1, $obj2, $obj3, $obj4));
         $this->assertEquals(array($obj1, $obj3), $enumerable->distinct($this->preClosure(function ($item) { return $item->a;})));
         $this->assertEquals(array($obj1, $obj2, $obj3), $enumerable->distinct($this->preClosure(function ($item) { return array($item->a, $item->b);})));
+    }
+
+    public function testEach()
+    {
+        $enumerable = $this->newInstance(array(1, 2));
+
+        $enumerable->each($this->preClosure(function(&$i) { $i = $i * $i; }));
+
+        $this->assertEquals(array(1, 4), $enumerable);
+    }
+
+    public function testEachWithObject()
+    {
+        $obj1 = new Object(1, 2);
+        $obj2 = new Object(2, 1);
+        $obj3 = new Object(3, 2);
+        $enumerable = $this->newInstance(array($obj1, $obj2, $obj3));
+
+        $enumerable->each($this->preClosure(function(Object &$i) { $i->a = $i->a * 2; }));
+
+        $this->assertEquals(array(2, 4, 6), array_map(function(Object $o) { return $o->a; },$enumerable->toArray()));
     }
 
     public function testElementAt()
@@ -492,7 +514,7 @@ abstract class EnumerableTestBase extends PHPUnit_Framework_TestCase
             array('thenBy', $this->func()),
             array('thenByDescending', $this->func()),
             array('toArray'),
-            array('toDictionary', $this->preClosure(function ($i) { return $i; })),
+            array('toDictionary', $this->preClosure(function ($i) { return $i; })), // hack to avoid key collision
             array('where', $this->func()),
         );
     }

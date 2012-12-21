@@ -7,6 +7,7 @@ use BCC\EnumerableUtility\Dictionary;
 use BCC\EnumerableUtility\Grouping;
 use BCC\EnumerableUtility\KeyValuePair;
 use BCC\EnumerableUtility\Collection;
+use BCC\EnumerableUtility\Tests\Fixtures\Object;
 
 include_once('EnumerableTestBase.php');
 
@@ -145,5 +146,29 @@ class DictionaryTest extends EnumerableTestBase
 
         $this->assertEquals(true, $dictionary->tryGetValue('b', $value));
         $this->assertEquals(2, $value);
+    }
+
+    public function testEach()
+    {
+        $enumerable = $this->newInstance(array(1, 2));
+        $result = array();
+
+        $enumerable->each(function(KeyValuePair $i) use (&$result) {
+            $result[] = $i->getValue();
+        });
+
+        $this->assertEquals(array(1, 2), $result);
+    }
+
+    public function testEachWithObject()
+    {
+        $obj1 = new Object(1, 2);
+        $obj2 = new Object(2, 1);
+        $obj3 = new Object(3, 2);
+        $enumerable = $this->newInstance(array($obj1, $obj2, $obj3));
+
+        $enumerable->each(function(KeyValuePair $i) { $i->getValue()->a = $i->getValue()->a * 2; });
+
+        $this->assertEquals(array(2, 4, 6), array_map(function(KeyValuePair $o) { return $o->getValue()->a; },$enumerable->toArray()));
     }
 }
