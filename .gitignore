@@ -1,0 +1,5 @@
+phpunit.xml
+vendor/*
+autoload.php
+composer.phar
+composer.lock
