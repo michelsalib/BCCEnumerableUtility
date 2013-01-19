@@ -2,10 +2,11 @@
 
 namespace BCC\EnumerableUtility;
 
-use BCC\EnumerableUtility\Util\PropertyPath;
 use LogicException;
 use Iterator;
 use InvalidArgumentException;
+use Symfony\Component\PropertyAccess\PropertyAccess;
+use Symfony\Component\PropertyAccess\PropertyPath;
 
 trait Enumerable
 {
@@ -630,7 +631,7 @@ trait Enumerable
         if (is_string($selector)) {
             $propertyPath = new PropertyPath($selector);
 
-            return function($item) use ($propertyPath) { return $propertyPath->getValue($item); };
+            return function($item) use ($propertyPath) { return PropertyAccess::getPropertyAccessor()->getValue($item, $propertyPath); };
         }
 
         throw new LogicException('Selector cannot be resolved');

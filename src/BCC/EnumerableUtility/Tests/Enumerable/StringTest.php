@@ -3,6 +3,7 @@
 namespace BCC\EnumerableUtilityUtility\Tests\Enumerable;
 
 use BCC\EnumerableUtility\String;
+use InvalidArgumentException;
 
 include_once('EnumerableTestBase.php');
 

@@ -3,8 +3,6 @@
 namespace BCC\EnumerableUtilityUtility\Tests\Enumerable;
 
 use BCC\EnumerableUtility\Tests\Fixtures\ResolverEnumerableMock;
-use BCC\EnumerableUtility\Util\PropertyPath;
-use BCC\EnumerableUtility\Tests\Fixtures\Object;
 
 class ExpressionTest extends \PHPUnit_Framework_TestCase
 {
@@ -31,24 +29,6 @@ class ExpressionTest extends \PHPUnit_Framework_TestCase
         $enumerable = new ResolverEnumerableMock();
 
         $enumerable->join(array(), 'test', 'test', function() {});
-    }
-
-    public function testPropertyPath()
-    {
-        $propertyPath = new PropertyPath('b');
-        $this->assertEquals(2, $propertyPath->getValue(new Object(1, 2)));
-
-        $propertyPath = new PropertyPath('[0].b');
-        $this->assertEquals(2, $propertyPath->getValue(array(new Object(1, 2))));
-
-        $propertyPath = new PropertyPath('b[0]');
-        $this->assertEquals(2, $propertyPath->getValue(new Object(1, array(2))));
-
-        $propertyPath = new PropertyPath('b.a');
-        $this->assertEquals(2, $propertyPath->getValue(new Object(1, new Object(2, 3))));
-
-        $propertyPath = new PropertyPath('[a][b]');
-        $this->assertEquals(2, $propertyPath->getValue(array('a' => array('b' => 2))));
     }
 
     public function expressionFunctions()
