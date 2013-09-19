@@ -8,7 +8,7 @@ use ArrayAccess;
 use Countable;
 use LogicException;
 
-interface IEnumerable extends IteratorAggregate, ArrayAccess, Countable
+interface EnumerableInterface extends IteratorAggregate, ArrayAccess, Countable
 {
     /**
      * @param callable $func
@@ -57,7 +57,7 @@ interface IEnumerable extends IteratorAggregate, ArrayAccess, Countable
     /**
      * @param callable|string $selector
      *
-     * @return IEnumerable
+     * @return EnumerableInterface
      */
     public function distinct($selector = null);
 
@@ -83,7 +83,7 @@ interface IEnumerable extends IteratorAggregate, ArrayAccess, Countable
     /**
      * @param string|callable $selector
      *
-     * @return IEnumerable
+     * @return EnumerableInterface
      */
     public function groupBy($selector);
 
@@ -93,7 +93,7 @@ interface IEnumerable extends IteratorAggregate, ArrayAccess, Countable
      * @param callable $innerSelector
      * @param callable $resultFunc
      *
-     * @return IEnumerable
+     * @return EnumerableInterface
      */
     public function join($innerItems, $outerSelector, $innerSelector, $resultFunc);
 
@@ -121,47 +121,47 @@ interface IEnumerable extends IteratorAggregate, ArrayAccess, Countable
     /**
      * @param callable|string $selector
      *
-     * @return IEnumerable
+     * @return EnumerableInterface
      */
     public function orderBy($selector = null);
 
     /**
      * @param callable|string $selector
      *
-     * @return IEnumerable
+     * @return EnumerableInterface
      */
     public function orderByDescending($selector = null);
 
     /**
-     * @return IEnumerable
+     * @return EnumerableInterface
      */
     public function reverse();
 
     /**
      * @param callable|string $selector
      *
-     * @return IEnumerable
+     * @return EnumerableInterface
      */
     public function select($selector);
 
     /**
      * @param callable|string $selector
      *
-     * @return IEnumerable
+     * @return EnumerableInterface
      */
     public function selectMany($selector = null);
 
     /**
      * @param int $count
      *
-     * @return IEnumerable
+     * @return EnumerableInterface
      */
     public function skip($count);
 
     /**
      * @param callable $func
      *
-     * @return IEnumerable
+     * @return EnumerableInterface
      */
     public function skipWhile($func);
 
@@ -175,28 +175,28 @@ interface IEnumerable extends IteratorAggregate, ArrayAccess, Countable
     /**
      * @param int $count
      *
-     * @return IEnumerable
+     * @return EnumerableInterface
      */
     public function take($count);
 
     /**
      * @param callable $func
      *
-     * @return IEnumerable
+     * @return EnumerableInterface
      */
     public function takeWhile($func);
 
     /**
      * @param callable|string $selector
      *
-     * @return IEnumerable
+     * @return EnumerableInterface
      */
     public function thenBy($selector = null);
 
     /**
      * @param callable|string $selector
      *
-     * @return IEnumerable
+     * @return EnumerableInterface
      */
     public function thenByDescending($selector = null);
 
@@ -218,7 +218,7 @@ interface IEnumerable extends IteratorAggregate, ArrayAccess, Countable
     /**
      * @param callable $func
      *
-     * @return IEnumerable
+     * @return EnumerableInterface
      */
     public function where($func);
 }

@@ -5,7 +5,7 @@ namespace BCC\EnumerableUtilityUtility\Tests\Enumerable;
 use InvalidArgumentException;
 use LogicException;
 use Closure;
-use BCC\EnumerableUtility\IEnumerable;
+use BCC\EnumerableUtility\EnumerableInterface;
 use BCC\EnumerableUtility\Grouping;
 use BCC\EnumerableUtility\Tests\Fixtures\Object;
 use PHPUnit_Framework_TestCase;
@@ -16,7 +16,7 @@ abstract class EnumerableTestBase extends PHPUnit_Framework_TestCase
     /**
      * @abstract
      * @param  null        $param
-     * @return IEnumerable
+     * @return EnumerableInterface
      */
     protected abstract function newInstance($param = null);
 
@@ -28,7 +28,7 @@ abstract class EnumerableTestBase extends PHPUnit_Framework_TestCase
     public static function assertEquals($expected, $actual, $message = '', $delta = 0, $maxDepth = 10, $canonicalize = FALSE, $ignoreCase = FALSE)
     {
         /** @var $actual String */
-        if (is_array($expected) && $actual instanceof IEnumerable) {
+        if (is_array($expected) && $actual instanceof EnumerableInterface) {
             $actual = $actual->toArray();
         }
 
@@ -461,7 +461,7 @@ abstract class EnumerableTestBase extends PHPUnit_Framework_TestCase
 
         $result = \call_user_func_array(array($enumerable, $function), \array_slice(\func_get_args(), 1));
 
-        $this->assertInstanceOf('\BCC\EnumerableUtility\IEnumerable', $result);
+        $this->assertInstanceOf('\BCC\EnumerableUtility\EnumerableInterface', $result);
     }
 
     public function enumerableReturnFunctions()

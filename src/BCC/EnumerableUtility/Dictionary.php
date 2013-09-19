@@ -2,16 +2,12 @@
 
 namespace BCC\EnumerableUtility;
 
-use Traversable;
 use ArrayIterator;
 use InvalidArgumentException;
+use Traversable;
 
-class Dictionary implements IEnumerable
+class Dictionary extends Enumerable
 {
-    use Enumerable {
-        Enumerable::resolveSelector as originalResolveSelector;
-    }
-
     /**
      * @var array
      */
@@ -19,6 +15,8 @@ class Dictionary implements IEnumerable
 
     /**
      * @param array|Dictionary|Traversable $array
+     *
+     * @throws \InvalidArgumentException
      */
     function __construct($array = null)
     {
@@ -214,6 +212,6 @@ class Dictionary implements IEnumerable
             $selector = function (KeyValuePair $item) { return $item->getValue(); } ;
         }
 
-        return $this->originalResolveSelector($selector);
+        return parent::resolveSelector($selector);
     }
 }

@@ -8,7 +8,7 @@ use InvalidArgumentException;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 use Symfony\Component\PropertyAccess\PropertyPath;
 
-trait Enumerable
+abstract class Enumerable implements EnumerableInterface
 {
     /**
      * @var array
@@ -181,11 +181,11 @@ trait Enumerable
     /**
      * @param string|callable $selector
      *
-     * @return IEnumerable
+     * @return EnumerableInterface
      */
     public function distinct($selector = null)
     {
-        $class = __CLASS__;
+        $class = get_called_class();
         $distinct = array();
         $result = array();
         $func = $this->resolveSelector($selector);
@@ -204,7 +204,7 @@ trait Enumerable
     /**
      * @param callable $func
      *
-     * @return IEnumerable
+     * @return EnumerableInterface
      */
     public function each($func)
     {
@@ -246,7 +246,7 @@ trait Enumerable
     /**
      * @param callable|string $selector
      *
-     * @return IEnumerable
+     * @return EnumerableInterface
      */
     public function groupBy($selector)
     {
@@ -354,7 +354,7 @@ trait Enumerable
     /**
      * @param callable|string $selector
      *
-     * @return IEnumerable
+     * @return EnumerableInterface
      */
     public function orderBy($selector = null)
     {
@@ -366,7 +366,7 @@ trait Enumerable
     /**
      * @param callable|string $selector
      *
-     * @return IEnumerable
+     * @return EnumerableInterface
      */
     public function orderByDescending($selector = null)
     {
@@ -376,11 +376,11 @@ trait Enumerable
     }
 
     /**
-     * @return IEnumerable
+     * @return EnumerableInterface
      */
     public function reverse()
     {
-        $class = __CLASS__;
+        $class = get_called_class();
 
         return new $class(array_reverse($this->toArray()));
     }
@@ -388,11 +388,11 @@ trait Enumerable
     /**
      * @param callable $selector
      *
-     * @return IEnumerable
+     * @return EnumerableInterface
      */
     public function select($selector)
     {
-        $class = __CLASS__;
+        $class = get_called_class();
 
         $func = $this->resolveSelector($selector);
 
@@ -402,11 +402,11 @@ trait Enumerable
     /**
      * @param callable $selector
      *
-     * @return IEnumerable
+     * @return EnumerableInterface
      */
     public function selectMany($selector = null)
     {
-        $class = __CLASS__;
+        $class = get_called_class();
         $result = array();
 
         $func = $this->resolveSelector($selector);
@@ -421,11 +421,11 @@ trait Enumerable
     /**
      * @param int $count
      *
-     * @return IEnumerable
+     * @return EnumerableInterface
      */
     public function skip($count)
     {
-        $class = __CLASS__;
+        $class = get_called_class();
 
         return new $class(array_slice($this->toArray(), $count));
     }
@@ -433,11 +433,11 @@ trait Enumerable
     /**
      * @param callable $func
      *
-     * @return IEnumerable
+     * @return EnumerableInterface
      */
     public function skipWhile($func)
     {
-        $class = __CLASS__;
+        $class = get_called_class();
         $result = array();
         $skipping = true;
 
@@ -475,11 +475,11 @@ trait Enumerable
     /**
      * @param int $count
      *
-     * @return IEnumerable
+     * @return EnumerableInterface
      */
     public function take($count)
     {
-        $class = __CLASS__;
+        $class = get_called_class();
 
         return new $class(array_slice($this->toArray(), 0, $count));
     }
@@ -487,11 +487,11 @@ trait Enumerable
     /**
      * @param callable $func
      *
-     * @return IEnumerable
+     * @return EnumerableInterface
      */
     public function takeWhile($func)
     {
-        $class = __CLASS__;
+        $class = get_called_class();
         $result = array();
 
         foreach ($this as $item) {
@@ -507,7 +507,7 @@ trait Enumerable
     /**
      * @param callable|string $selector
      *
-     * @return IEnumerable
+     * @return EnumerableInterface
      */
     public function thenBy($selector = null)
     {
@@ -521,7 +521,7 @@ trait Enumerable
     /**
      * @param callable|string $selector
      *
-     * @return IEnumerable
+     * @return EnumerableInterface
      */
     public function thenByDescending($selector = null)
     {
@@ -562,11 +562,11 @@ trait Enumerable
     /**
      * @param callable $func
      *
-     * @return IEnumerable
+     * @return EnumerableInterface
      */
     public function where($func)
     {
-        $class = __CLASS__;
+        $class = get_called_class();
         $result = array();
 
         foreach ($this as $item) {
@@ -581,12 +581,12 @@ trait Enumerable
     /**
      * @param array $sequence
      *
-     * @return IEnumerable
+     * @return EnumerableInterface
      */
     protected function order(array $sequence)
     {
         $result = array();
-        $class = __CLASS__;
+        $class = get_called_class();
 
         foreach ($this as $item) {
             $result[] = $item;

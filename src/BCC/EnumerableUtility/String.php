@@ -5,10 +5,8 @@ namespace BCC\EnumerableUtility;
 use ArrayIterator;
 use InvalidArgumentException;
 
-class String implements IEnumerable
+class String extends Enumerable
 {
-    use Enumerable;
-
     /**
      * @var string
      */
@@ -16,6 +14,8 @@ class String implements IEnumerable
 
     /**
      * @param string|string[] $string
+     *
+     * @throws \InvalidArgumentException
      */
     function __construct($string = null)
     {

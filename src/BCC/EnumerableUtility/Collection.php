@@ -3,13 +3,11 @@
 namespace BCC\EnumerableUtility;
 
 use ArrayIterator;
-use Traversable;
 use InvalidArgumentException;
+use Traversable;
 
-class Collection implements IEnumerable
+class Collection extends Enumerable
 {
-    use Enumerable;
-
     /**
      * @var array
      */
@@ -17,6 +15,8 @@ class Collection implements IEnumerable
 
     /**
      * @param array|Traversable $array
+     *
+     * @throws \InvalidArgumentException
      */
     function __construct($array = null)
     {

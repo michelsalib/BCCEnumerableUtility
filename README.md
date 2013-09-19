@@ -4,9 +4,8 @@
 
 ##Enumerable Utility
 
-The enumerable utility library provides an easy way to manipulate enumerables. This library contains:
+The enumerable utility library provides an easy way to manipulate collections. This library contains:
 
-- An `Enumerable` trait with many usefull methods
 - A `String` class that uses `Enumerable` and adds more wonderful methods
 - A `Collection` class that helps you rapidly leverage the `Enumerable` trait
 - A `Dictionary` class that is an indexed `Collection`
@@ -178,79 +177,6 @@ $string = $string->replace('world', 'pineapple')       // replace world by pinea
        ->takeWhile(function($char) { $char != '!'; }); // take the rest while the char is different from '!'
 
 echo $string; // PINEAPPLE
-
-```
-
-##Use the `Enumerable` trait
-
-First, implement the `IEnumerable` interface. A simple reference to the trait will auto implement the interface. You will just be forced to add some additional methods that comes from the `IteratorAggregate` and `ArrayAccess` interfaces.
-Let's take as an example a Basket which is an enumerable of Product:
-
-``` php
-<?php
-
-namespace \My;
-
-use BCC\EnumerableUtility\Enumerable;
-use BCC\EnumerableUtility\IEnumerable;
-
-class Basket implements IEnumerable {
-
-    use Enumerable;
-
-    private $products;
-
-    function __construct(array $products)
-    {
-        $this->products = $products;
-    }
-
-    public function getIterator()
-    {
-        return new \ArrayIterator($this->products);
-    }
-
-    public function offsetExists($offset)
-    {
-        return isset($this->products[$offset]);
-    }
-
-    public function offsetGet($offset)
-    {
-        return $this->products[$offset];
-    }
-
-    public function offsetSet($offset, $value)
-    {
-        $this->products[$offset] = $value;
-    }
-
-    public function offsetUnset($offset)
-    {
-        unset($this->products[$offset]);
-    }
-}
-
-```
-
-You are good to go, and you can now write some fancy code:
-
-``` php
-<?php
-
-$basket = new Basket(...);
-
-// all the products with a value over 10
-$basket->where(function($product) { return $product->getValue() > 10; });
-
-// order by name
-$basket->orderBy(function($product) { return $product->getName(); });
-
-// has any product with a value under 50
-$basket->any(function($product) { return $product->getValue() < 50; });
-
-// first element with a value of 30
-$basket->first(function($product) { return $product->getValue() == 30; });
 
 ```
 

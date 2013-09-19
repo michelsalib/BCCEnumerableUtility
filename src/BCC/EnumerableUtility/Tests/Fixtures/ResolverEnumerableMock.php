@@ -3,12 +3,9 @@
 namespace BCC\EnumerableUtility\Tests\Fixtures;
 
 use BCC\EnumerableUtility\Enumerable;
-use BCC\EnumerableUtility\IEnumerable;
 
-class ResolverEnumerableMock implements IEnumerable
+class ResolverEnumerableMock extends Enumerable
 {
-    use Enumerable;
-
     private $array;
 
     function __construct($array = null)
