@@ -459,7 +459,7 @@ class StringTest extends EnumerableTestBase
         );
     }
 
-    private function func(){
+    protected function func(){
         return function () { return 1; };
     }
 }

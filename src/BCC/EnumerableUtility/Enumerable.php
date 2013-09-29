@@ -2,18 +2,19 @@
 
 namespace BCC\EnumerableUtility;
 
-use LogicException;
-use Iterator;
+use BCC\EnumerableUtility\Resolver\ExpressionResolver;
+use BCC\EnumerableUtility\Resolver\NullResolver;
+use BCC\EnumerableUtility\Resolver\PropertyPathResolver;
+use BCC\EnumerableUtility\Resolver\ResolverInterface;
 use InvalidArgumentException;
-use Symfony\Component\PropertyAccess\PropertyAccess;
-use Symfony\Component\PropertyAccess\PropertyPath;
+use LogicException;
 
 abstract class Enumerable implements EnumerableInterface
 {
     /**
      * @var array
      */
-    protected $orderSequence   = array();
+    protected $orderSequence   = [];
 
     /**
      * @var array
@@ -26,42 +27,51 @@ abstract class Enumerable implements EnumerableInterface
     protected $orderDescending = false;
 
     /**
-     * @abstract
-     * @return Iterator
+     * @var ResolverInterface[]
      */
-    public abstract function getIterator();
+    protected static $resolvers = [];
+
+    private static $initialized = false;
+
+    public function __construct()
+    {
+        if (!self::$initialized) {
+            self::resetResolvers();
+            self::$initialized = true;
+        }
+    }
+
+    public static function resetResolvers()
+    {
+        self::$resolvers = [
+            new NullResolver(),
+            new PropertyPathResolver(),
+            new ExpressionResolver(),
+        ];
+    }
 
     /**
-     * @param $offset
+     * Append a resolver to the resolver chain
      *
-     * @return bool
+     * @param ResolverInterface $resolver
      */
-    public abstract function offsetExists($offset);
+    public static function appendResolver(ResolverInterface $resolver)
+    {
+        self::$resolvers[] = $resolver;
+    }
 
     /**
-     * @param $offset
+     * Prepend a resolver to the resolver chain
      *
-     * @return mixed
+     * @param ResolverInterface $resolver
      */
-    public abstract function offsetGet($offset);
+    public static function prependResolver(ResolverInterface $resolver)
+    {
+        array_unshift(self::$resolvers, $resolver);
+    }
 
     /**
-     * @param $offset
-     * @param $value
-     *
-     * @return mixed
-     */
-    public abstract function offsetSet($offset, $value);
-
-    /**
-     * @param $offset
-     *
-     * @return mixed
-     */
-    public abstract function offsetUnset($offset);
-
-    /**
-     * @return array
+     * @inheritdoc
      */
     public function toArray()
     {
@@ -69,9 +79,7 @@ abstract class Enumerable implements EnumerableInterface
     }
 
     /**
-     * @param callable $func
-     *
-     * @return mixed
+     * @inheritdoc
      */
     public function aggregate($func)
     {
@@ -84,12 +92,12 @@ abstract class Enumerable implements EnumerableInterface
     }
 
     /**
-     * @param callable $func
-     *
-     * @return bool
+     * @inheritdoc
      */
     public function all($func)
     {
+        $func = $this->resolveFunction($func);
+
         foreach ($this as $item) {
             if (!$func($item)) {
 
@@ -101,13 +109,11 @@ abstract class Enumerable implements EnumerableInterface
     }
 
     /**
-     * @param callable $func
-     *
-     * @return bool
+     * @inheritdoc
      */
     public function any($func = null)
     {
-        $func = $func ?: function() { return true; };
+        $func = $this->resolveFunction($func ?: function() { return true; });
 
         foreach ($this as $item) {
             if ($func($item)) {
@@ -120,17 +126,13 @@ abstract class Enumerable implements EnumerableInterface
     }
 
     /**
-     * @param string|callable $selector
-     *
-     * @return float
-     *
-     * @throws InvalidArgumentException
+     * @inheritdoc
      */
-    public function average($selector = null)
+    public function average($func = null)
     {
-        $func = $this->resolveSelector($selector);
+        $func = $this->resolveFunction($func);
 
-        $result = array();
+        $result = [];
         foreach ($this as $item) {
             $result[] = $func($item);
         }
@@ -143,9 +145,7 @@ abstract class Enumerable implements EnumerableInterface
     }
 
     /**
-     * @param mixed $value
-     *
-     * @return bool
+     * @inheritdoc
      */
     public function contains($value)
     {
@@ -160,13 +160,11 @@ abstract class Enumerable implements EnumerableInterface
     }
 
     /**
-     * @param callable $func
-     *
-     * @return int
+     * @inheritdoc
      */
     public function count($func = null)
     {
-        $func = $func ?: function () { return true; };
+        $func = $this->resolveFunction($func ?: function () { return true; });
         $result = 0;
 
         foreach ($this as $item) {
@@ -179,16 +177,14 @@ abstract class Enumerable implements EnumerableInterface
     }
 
     /**
-     * @param string|callable $selector
-     *
-     * @return EnumerableInterface
+     * @inheritdoc
      */
-    public function distinct($selector = null)
+    public function distinct($func = null)
     {
         $class = get_called_class();
-        $distinct = array();
-        $result = array();
-        $func = $this->resolveSelector($selector);
+        $distinct = [];
+        $result = [];
+        $func = $this->resolveFunction($func);
 
         foreach ($this as $item) {
             $distinctKey = $func($item);
@@ -202,12 +198,12 @@ abstract class Enumerable implements EnumerableInterface
     }
 
     /**
-     * @param callable $func
-     *
-     * @return EnumerableInterface
+     * @inheritdoc
      */
     public function each($func)
     {
+        $func = $this->resolveFunction($func);
+
         foreach ($this as $key => $item) {
             $func($item);
             $this[$key] = $item;
@@ -215,9 +211,7 @@ abstract class Enumerable implements EnumerableInterface
     }
 
     /**
-     * @param mixed $index
-     *
-     * @return mixed
+     * @inheritdoc
      */
     public function elementAt($index)
     {
@@ -225,13 +219,11 @@ abstract class Enumerable implements EnumerableInterface
     }
 
     /**
-     * @param callable $func
-     *
-     * @return mixed
+     * @inheritdoc
      */
     public function first($func = null)
     {
-        $func = $func ?: function () { return true; };
+        $func = $this->resolveFunction($func ?: function () { return true; });
 
         foreach ($this as $item) {
             if ($func($item)) {
@@ -244,21 +236,19 @@ abstract class Enumerable implements EnumerableInterface
     }
 
     /**
-     * @param callable|string $selector
-     *
-     * @return EnumerableInterface
+     * @inheritdoc
      */
-    public function groupBy($selector)
+    public function groupBy($func)
     {
-        $compute = array();
-        $result = array();
-        $func = $this->resolveSelector($selector);
+        $compute = [];
+        $result = [];
+        $func = $this->resolveFunction($func);
 
         foreach ($this as $item) {
             $group = $func($item);
             $key = is_object($group) ? spl_object_hash($group) : $group;
             if (!isset($compute[$key])) {
-                $compute[$key] = array('group' => $group, 'items' => array());
+                $compute[$key] = array('group' => $group, 'items' => []);
             }
             $compute[$key]['items'][] = $item;
         }
@@ -271,19 +261,14 @@ abstract class Enumerable implements EnumerableInterface
     }
 
     /**
-     * @param Iterator $innerItems
-     * @param callable $outerSelector
-     * @param callable $innerSelector
-     * @param callable $resultFunc
-     *
-     * @return Collection
+     * @inheritdoc
      */
     public function join($innerItems, $outerSelector, $innerSelector, $resultFunc)
     {
-        $result = array();
+        $result = [];
 
-        $outerFunc = $this->resolveSelector($outerSelector);
-        $innerFunc = $this->resolveSelector($innerSelector);
+        $outerFunc = $this->resolveFunction($outerSelector);
+        $innerFunc = $this->resolveFunction($innerSelector);
 
         foreach ($this as $outer) {
             $outerKey = $outerFunc($outer);
@@ -298,9 +283,7 @@ abstract class Enumerable implements EnumerableInterface
     }
 
     /**
-     * @param callable $func
-     *
-     * @return mixed
+     * @inheritdoc
      */
     public function last($func = null)
     {
@@ -308,15 +291,13 @@ abstract class Enumerable implements EnumerableInterface
     }
 
     /**
-     * @param callable|string $selector
-     *
-     * @return mixed
+     * @inheritdoc
      */
-    public function max($selector = null)
+    public function max($func = null)
     {
         $result = null;
         $resultValue = null;
-        $func = $this->resolveSelector($selector);
+        $func = $this->resolveFunction($func);
 
         foreach ($this as $item) {
             $newResultValue = $func($item);
@@ -330,15 +311,13 @@ abstract class Enumerable implements EnumerableInterface
     }
 
     /**
-     * @param callable|string $selector
-     *
-     * @return mixed
+     * @inheritdoc
      */
-    public function min($selector = null)
+    public function min($func = null)
     {
         $result = null;
         $resultValue = PHP_INT_MAX;
-        $func = $this->resolveSelector($selector);
+        $func = $this->resolveFunction($func);
 
         foreach ($this as $item) {
             $newResultValue = $func($item);
@@ -352,31 +331,27 @@ abstract class Enumerable implements EnumerableInterface
     }
 
     /**
-     * @param callable|string $selector
-     *
-     * @return EnumerableInterface
+     * @inheritdoc
      */
-    public function orderBy($selector = null)
+    public function orderBy($func = null)
     {
-        $func = $this->resolveSelector($selector);
+        $func = $this->resolveFunction($func);
 
         return $this->order(array(array('order' => $this->orderAscending, 'func' => $func)));
     }
 
     /**
-     * @param callable|string $selector
-     *
-     * @return EnumerableInterface
+     * @inheritdoc
      */
-    public function orderByDescending($selector = null)
+    public function orderByDescending($func = null)
     {
-        $func = $this->resolveSelector($selector);
+        $func = $this->resolveFunction($func);
 
         return $this->order(array(array('order' => $this->orderDescending, 'func' => $func)));
     }
 
     /**
-     * @return EnumerableInterface
+     * @inheritdoc
      */
     public function reverse()
     {
@@ -386,30 +361,26 @@ abstract class Enumerable implements EnumerableInterface
     }
 
     /**
-     * @param callable $selector
-     *
-     * @return EnumerableInterface
+     * @inheritdoc
      */
-    public function select($selector)
+    public function select($func)
     {
         $class = get_called_class();
 
-        $func = $this->resolveSelector($selector);
+        $func = $this->resolveFunction($func);
 
         return new $class(array_map($func, $this->toArray()));
     }
 
     /**
-     * @param callable $selector
-     *
-     * @return EnumerableInterface
+     * @inheritdoc
      */
-    public function selectMany($selector = null)
+    public function selectMany($func = null)
     {
         $class = get_called_class();
-        $result = array();
+        $result = [];
 
-        $func = $this->resolveSelector($selector);
+        $func = $this->resolveFunction($func);
 
         foreach (array_map($func, $this->toArray()) as $subValue) {
             $result = array_merge($result, $subValue);
@@ -419,9 +390,7 @@ abstract class Enumerable implements EnumerableInterface
     }
 
     /**
-     * @param int $count
-     *
-     * @return EnumerableInterface
+     * @inheritdoc
      */
     public function skip($count)
     {
@@ -431,15 +400,14 @@ abstract class Enumerable implements EnumerableInterface
     }
 
     /**
-     * @param callable $func
-     *
-     * @return EnumerableInterface
+     * @inheritdoc
      */
     public function skipWhile($func)
     {
         $class = get_called_class();
-        $result = array();
+        $result = [];
         $skipping = true;
+        $func = $this->resolveFunction($func);
 
         foreach ($this as $item) {
             if ($skipping && $func($item)) {
@@ -455,13 +423,11 @@ abstract class Enumerable implements EnumerableInterface
     }
 
     /**
-     * @param callable|string $selector
-     *
-     * @return float
+     * @inheritdoc
      */
-    public function sum($selector = null)
+    public function sum($func = null)
     {
-        $func = $this->resolveSelector($selector);
+        $func = $this->resolveFunction($func);
 
         $result = 0;
         foreach ($this as $item) {
@@ -473,9 +439,7 @@ abstract class Enumerable implements EnumerableInterface
 
 
     /**
-     * @param int $count
-     *
-     * @return EnumerableInterface
+     * @inheritdoc
      */
     public function take($count)
     {
@@ -485,14 +449,13 @@ abstract class Enumerable implements EnumerableInterface
     }
 
     /**
-     * @param callable $func
-     *
-     * @return EnumerableInterface
+     * @inheritdoc
      */
     public function takeWhile($func)
     {
         $class = get_called_class();
-        $result = array();
+        $result = [];
+        $func = $this->resolveFunction($func);
 
         foreach ($this as $item) {
             if (!$func($item)) {
@@ -505,13 +468,11 @@ abstract class Enumerable implements EnumerableInterface
     }
 
     /**
-     * @param callable|string $selector
-     *
-     * @return EnumerableInterface
+     * @inheritdoc
      */
-    public function thenBy($selector = null)
+    public function thenBy($func = null)
     {
-        $func = $this->resolveSelector($selector);
+        $func = $this->resolveFunction($func);
         $sequence = $this->orderSequence;
         $sequence[] = array('order' => $this->orderAscending, 'func' => $func);
 
@@ -519,13 +480,11 @@ abstract class Enumerable implements EnumerableInterface
     }
 
     /**
-     * @param callable|string $selector
-     *
-     * @return EnumerableInterface
+     * @inheritdoc
      */
-    public function thenByDescending($selector = null)
+    public function thenByDescending($func = null)
     {
-        $func = $this->resolveSelector($selector);
+        $func = $this->resolveFunction($func);
         $sequence = $this->orderSequence;
         $sequence[] = array('order' => $this->orderDescending, 'func' => $func);
 
@@ -533,18 +492,13 @@ abstract class Enumerable implements EnumerableInterface
     }
 
     /**
-     * @param callable|string $keySelector
-     * @param callable|string $valueSelector
-     *
-     * @throws LogicException
-     *
-     * @return Dictionary
+     * @inheritdoc
      */
     public function toDictionary($keySelector, $valueSelector = null)
     {
         $result = new Dictionary();
-        $keyFunc = $this->resolveSelector($keySelector);
-        $valueFunc = $this->resolveSelector($valueSelector);
+        $keyFunc = $this->resolveFunction($keySelector);
+        $valueFunc = $this->resolveFunction($valueSelector);
 
         foreach ($this as $item) {
             $key = $keyFunc($item);
@@ -560,14 +514,13 @@ abstract class Enumerable implements EnumerableInterface
     }
 
     /**
-     * @param callable $func
-     *
-     * @return EnumerableInterface
+     * @inheritdoc
      */
     public function where($func)
     {
         $class = get_called_class();
-        $result = array();
+        $result = [];
+        $func = $this->resolveFunction($func);
 
         foreach ($this as $item) {
             if ($func($item)) {
@@ -585,7 +538,7 @@ abstract class Enumerable implements EnumerableInterface
      */
     protected function order(array $sequence)
     {
-        $result = array();
+        $result = [];
         $class = get_called_class();
 
         foreach ($this as $item) {
@@ -614,26 +567,25 @@ abstract class Enumerable implements EnumerableInterface
     }
 
     /**
-     * @param callable|string $selector
+     * @param mixed $function
      *
      * @return callable
      *
      * @throws LogicException
      */
-    protected function resolveSelector($selector = null)
+    protected function resolveFunction($function)
     {
-        if ($selector === null) {
-            return function ($item) { return $item; };
-        }
-        if (is_callable($selector)) {
-            return $selector;
-        }
-        if (is_string($selector)) {
-            $propertyPath = new PropertyPath($selector);
-
-            return function($item) use ($propertyPath) { return PropertyAccess::getPropertyAccessor()->getValue($item, $propertyPath); };
+        // callable selector
+        if (is_callable($function)) {
+            return $function;
         }
 
-        throw new LogicException('Selector cannot be resolved');
+        foreach (self::$resolvers as $resolver) {
+            if (is_callable($result = $resolver->resolve($function))) {
+                return $result;
+            }
+        }
+
+        throw new LogicException(sprintf('Function "%s" cannot be resolved', $function));
     }
 }

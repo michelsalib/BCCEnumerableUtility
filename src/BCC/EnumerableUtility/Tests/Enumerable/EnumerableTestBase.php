@@ -519,7 +519,7 @@ abstract class EnumerableTestBase extends PHPUnit_Framework_TestCase
         );
     }
 
-    private function func(){
+    protected function func(){
         return $this->preClosure(function () { return 1; });
     }
 }

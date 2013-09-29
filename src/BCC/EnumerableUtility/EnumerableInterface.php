@@ -2,10 +2,11 @@
 
 namespace BCC\EnumerableUtility;
 
-use InvalidArgumentException;
-use IteratorAggregate;
 use ArrayAccess;
 use Countable;
+use InvalidArgumentException;
+use Iterator;
+use IteratorAggregate;
 use LogicException;
 
 interface EnumerableInterface extends IteratorAggregate, ArrayAccess, Countable
@@ -18,27 +19,27 @@ interface EnumerableInterface extends IteratorAggregate, ArrayAccess, Countable
     public function aggregate($func);
 
     /**
-     * @param callable $func
+     * @param mixed $func
      *
      * @return bool
      */
     public function all($func);
 
     /**
-     * @param callable|string $func
+     * @param mixed $func
      *
      * @return bool
      */
     public function any($func = null);
 
     /**
-     * @param callable|string $selector
+     * @param mixed $func
      *
      * @return float
      *
      * @throws InvalidArgumentException
      */
-    public function average($selector = null);
+    public function average($func = null);
 
     /**
      * @param mixed $value
@@ -48,21 +49,21 @@ interface EnumerableInterface extends IteratorAggregate, ArrayAccess, Countable
     public function contains($value);
 
     /**
-     * @param callable $func
+     * @param mixed $func
      *
      * @return int
      */
     public function count($func = null);
 
     /**
-     * @param callable|string $selector
+     * @param mixed $func
      *
      * @return EnumerableInterface
      */
-    public function distinct($selector = null);
+    public function distinct($func = null);
 
     /**
-     * @param callable $func
+     * @param mixed $func
      */
     public function each($func);
 
@@ -74,23 +75,23 @@ interface EnumerableInterface extends IteratorAggregate, ArrayAccess, Countable
     public function elementAt($index);
 
     /**
-     * @param callable $func
+     * @param mixed $func
      *
      * @return mixed
      */
     public function first($func = null);
 
     /**
-     * @param string|callable $selector
+     * @param string|mixed $func
      *
      * @return EnumerableInterface
      */
-    public function groupBy($selector);
+    public function groupBy($func);
 
     /**
-     * @param Iterator $innerItems
-     * @param callable $outerSelector
-     * @param callable $innerSelector
+     * @param Iterator|array $innerItems
+     * @param mixed $outerSelector
+     * @param mixed $innerSelector
      * @param callable $resultFunc
      *
      * @return EnumerableInterface
@@ -98,39 +99,39 @@ interface EnumerableInterface extends IteratorAggregate, ArrayAccess, Countable
     public function join($innerItems, $outerSelector, $innerSelector, $resultFunc);
 
     /**
-     * @param callable $func
+     * @param mixed $func
      *
      * @return mixed
      */
     public function last($func = null);
 
     /**
-     * @param callable|string $selector
+     * @param mixed $func
      *
      * @return mixed
      */
-    public function max($selector = null);
+    public function max($func = null);
 
     /**
-     * @param callable|string $selector
+     * @param mixed $func
      *
      * @return mixed
      */
-    public function min($selector = null);
+    public function min($func = null);
 
     /**
-     * @param callable|string $selector
+     * @param mixed $func
      *
      * @return EnumerableInterface
      */
-    public function orderBy($selector = null);
+    public function orderBy($func = null);
 
     /**
-     * @param callable|string $selector
+     * @param mixed $func
      *
      * @return EnumerableInterface
      */
-    public function orderByDescending($selector = null);
+    public function orderByDescending($func = null);
 
     /**
      * @return EnumerableInterface
@@ -138,18 +139,18 @@ interface EnumerableInterface extends IteratorAggregate, ArrayAccess, Countable
     public function reverse();
 
     /**
-     * @param callable|string $selector
+     * @param mixed $func
      *
      * @return EnumerableInterface
      */
-    public function select($selector);
+    public function select($func);
 
     /**
-     * @param callable|string $selector
+     * @param mixed $func
      *
      * @return EnumerableInterface
      */
-    public function selectMany($selector = null);
+    public function selectMany($func = null);
 
     /**
      * @param int $count
@@ -159,18 +160,18 @@ interface EnumerableInterface extends IteratorAggregate, ArrayAccess, Countable
     public function skip($count);
 
     /**
-     * @param callable $func
+     * @param mixed $func
      *
      * @return EnumerableInterface
      */
     public function skipWhile($func);
 
     /**
-     * @param callable|string $selector
+     * @param mixed $func
      *
      * @return float
      */
-    public function sum($selector = null);
+    public function sum($func = null);
 
     /**
      * @param int $count
@@ -180,25 +181,25 @@ interface EnumerableInterface extends IteratorAggregate, ArrayAccess, Countable
     public function take($count);
 
     /**
-     * @param callable $func
+     * @param mixed $func
      *
      * @return EnumerableInterface
      */
     public function takeWhile($func);
 
     /**
-     * @param callable|string $selector
+     * @param mixed $func
      *
      * @return EnumerableInterface
      */
-    public function thenBy($selector = null);
+    public function thenBy($func = null);
 
     /**
-     * @param callable|string $selector
+     * @param mixed $func
      *
      * @return EnumerableInterface
      */
-    public function thenByDescending($selector = null);
+    public function thenByDescending($func = null);
 
     /**
      * @return array
@@ -206,8 +207,8 @@ interface EnumerableInterface extends IteratorAggregate, ArrayAccess, Countable
     public function toArray();
 
     /**
-     * @param callable|string $keySelector
-     * @param callable|string $valueSelector
+     * @param mixed $keySelector
+     * @param mixed $valueSelector
      *
      * @throws LogicException
      *
@@ -216,7 +217,7 @@ interface EnumerableInterface extends IteratorAggregate, ArrayAccess, Countable
     public function toDictionary($keySelector, $valueSelector = null);
 
     /**
-     * @param callable $func
+     * @param mixed $func
      *
      * @return EnumerableInterface
      */

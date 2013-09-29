@@ -1,3 +1,4 @@
+.idea
 phpunit.xml
 vendor/*
 autoload.php

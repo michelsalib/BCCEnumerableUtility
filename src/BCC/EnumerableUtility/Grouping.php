@@ -12,6 +12,7 @@ class Grouping extends Collection
     function __construct($key, $array = null)
     {
         parent::__construct($array);
+
         $this->key = $key;
     }
 

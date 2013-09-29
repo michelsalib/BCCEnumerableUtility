@@ -20,6 +20,8 @@ class Collection extends Enumerable
      */
     function __construct($array = null)
     {
+        parent::__construct();
+
         if ($array === null) {
             $this->array = array();
         }
@@ -35,7 +37,7 @@ class Collection extends Enumerable
     }
 
     /**
-     * @return ArrayIterator
+     * @inheritdoc
      */
     public function getIterator()
     {
@@ -43,9 +45,7 @@ class Collection extends Enumerable
     }
 
     /**
-     * @param int $offset
-     *
-     * @return bool
+     * @inheritdoc
      */
     public function offsetExists($offset)
     {
@@ -53,9 +53,7 @@ class Collection extends Enumerable
     }
 
     /**
-     * @param int $offset
-     *
-     * @return mixed
+     * @inheritdoc
      */
     public function offsetGet($offset)
     {
@@ -63,9 +61,7 @@ class Collection extends Enumerable
     }
 
     /**
-     * @param int $offset
-     *
-     * @param mixed $value
+     * @inheritdoc
      */
     public function offsetSet($offset, $value)
     {
@@ -75,7 +71,7 @@ class Collection extends Enumerable
     }
 
     /**
-     * @param int $offset
+     * @inheritdoc
      */
     public function offsetUnset($offset)
     {
@@ -135,7 +131,7 @@ class Collection extends Enumerable
     {
         $result = $this->take($index);
         $result->add($item);
-        $result->addRange($this->skip($index)->toArray());
+        $result->addRange($this->skip($index));
 
         $this->array = $result->toArray();
     }

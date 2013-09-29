@@ -9,7 +9,7 @@ use Traversable;
 class Dictionary extends Enumerable
 {
     /**
-     * @var array
+     * @var KeyValuePair[]
      */
     private $array;
 
@@ -20,8 +20,10 @@ class Dictionary extends Enumerable
      */
     function __construct($array = null)
     {
+        parent::__construct();
+
         if ($array === null) {
-            $this->array = array();
+            $this->array = [];
             return;
         }
 
@@ -51,7 +53,7 @@ class Dictionary extends Enumerable
     }
 
     /**
-     * @return ArrayIterator
+     * @inheritdoc
      */
     public function getIterator()
     {
@@ -59,9 +61,7 @@ class Dictionary extends Enumerable
     }
 
     /**
-     * @param mixed $offset
-     *
-     * @return bool
+     * @inheritdoc
      */
     public function offsetExists($offset)
     {
@@ -71,9 +71,7 @@ class Dictionary extends Enumerable
     }
 
     /**
-     * @param mixed $offset
-     *
-     * @return mixed
+     * @inheritdoc
      */
     public function offsetGet($offset)
     {
@@ -83,8 +81,7 @@ class Dictionary extends Enumerable
     }
 
     /**
-     * @param mixed $offset
-     * @param mixed $value
+     * @inheritdoc
      */
     public function offsetSet($offset, $value)
     {
@@ -94,7 +91,7 @@ class Dictionary extends Enumerable
     }
 
     /**
-     * @param mixed $offset
+     * @inheritdoc
      */
     public function offsetUnset($offset)
     {
@@ -104,7 +101,7 @@ class Dictionary extends Enumerable
     }
 
     /**
-     * @return array
+     * @inheritdoc
      */
     public function keys()
     {
@@ -124,8 +121,7 @@ class Dictionary extends Enumerable
     }
 
     /**
-     * @param $key
-     * @param $item
+     * @inheritdoc
      */
     public function add($key, $item)
     {
@@ -185,9 +181,7 @@ class Dictionary extends Enumerable
     }
 
     /**
-     * @param mixed $value
-     *
-     * @return bool
+     * @inheritdoc
      */
     public function contains($value)
     {
@@ -202,16 +196,14 @@ class Dictionary extends Enumerable
     }
 
     /**
-     * @param string|callable $selector
-     *
-     * @return callable
+     * @inheritdoc
      */
-    protected function resolveSelector($selector = null)
+    protected function resolveFunction($function)
     {
-        if ($selector == null) {
-            $selector = function (KeyValuePair $item) { return $item->getValue(); } ;
+        if ($function === null) {
+            return function (KeyValuePair $item) { return $item->getValue(); } ;
         }
 
-        return parent::resolveSelector($selector);
+        return parent::resolveFunction($function);
     }
 }

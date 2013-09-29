@@ -19,6 +19,8 @@ class String extends Enumerable
      */
     function __construct($string = null)
     {
+        parent::__construct();
+
         if (is_array($string)) {
             $this->string = implode($string);
         }
@@ -45,7 +47,7 @@ class String extends Enumerable
     }
 
     /**
-     * @return ArrayIterator
+     * @inheritdoc
      */
     public function getIterator()
     {
@@ -64,9 +66,7 @@ class String extends Enumerable
     }
 
     /**
-     * @param int $offset
-     *
-     * @return bool
+     * @inheritdoc
      */
     public function offsetExists($offset)
     {
@@ -74,9 +74,7 @@ class String extends Enumerable
     }
 
     /**
-     * @param int $offset
-     *
-     * @return string
+     * @inheritdoc
      */
     public function offsetGet($offset)
     {
@@ -84,8 +82,7 @@ class String extends Enumerable
     }
 
     /**
-     * @param int $offset
-     * @param string $value
+     * @inheritdoc
      */
     public function offsetSet($offset, $value)
     {
@@ -96,7 +93,7 @@ class String extends Enumerable
     }
 
     /**
-     * @param int $offset
+     * @inheritdoc
      */
     public function offsetUnset($offset)
     {
@@ -107,10 +104,7 @@ class String extends Enumerable
     }
 
     /**
-     * @param string $value
-     * @param bool $ignoreCase
-     *
-     * @return bool
+     * @inheritdoc
      */
     public function contains($value, $ignoreCase = false)
     {
@@ -180,11 +174,11 @@ class String extends Enumerable
 
     /**
      * @param string $string
-     * @param string[] $args
+     * @param string $_ [optional]
      *
      * @return String
      */
-    public static function format($string, $args = null)
+    public static function format($string, $_ = null)
     {
         $args = array_slice(func_get_args(), 1);
 
