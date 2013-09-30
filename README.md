@@ -1,13 +1,14 @@
 #Readme
 
 [![Build Status](https://secure.travis-ci.org/michelsalib/BCCEnumerableUtility.png?branch=master)](http://travis-ci.org/michelsalib/BCCEnumerableUtility)
+[![Scrutinizer Quality Score](https://scrutinizer-ci.com/g/michelsalib/BCCEnumerableUtility/badges/quality-score.png?s=423e5edf7fa4db0a299285498102c7bcadab87e3)](https://scrutinizer-ci.com/g/michelsalib/BCCEnumerableUtility/)
 
 ##Enumerable Utility
 
 The enumerable utility library provides an easy way to manipulate collections. This library contains:
 
 - A `String` class that uses `Enumerable` and adds more wonderful methods
-- A `Collection` class that helps you rapidly leverage the `Enumerable` trait
+- A `Collection` class that helps you rapidly leverage the `Enumerable`
 - A `Dictionary` class that is an indexed `Collection`
 - A `StringUtility` class if you don't like the idea of a `String` class
 
