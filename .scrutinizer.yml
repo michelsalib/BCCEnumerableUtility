@@ -1,0 +1,21 @@
+before_commands:
+    - "composer install --prefer-source"
+
+filter:
+    excluded_paths: [vendor/*, app/*, web/*]
+
+tools:
+    js_hint: false
+    php_mess_detector: true
+    php_cs_fixer:
+        config:
+            level: all
+    php_code_sniffer: true
+    sensiolabs_security_checker: true
+    php_code_coverage:
+        test_command: phpunit -c phpunit.xml.dist
+    php_cpd: true
+    php_loc: true
+    php_pdepend:
+        excluded_dirs: [vendor]
+    external_code_coverage: false
