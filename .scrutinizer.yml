@@ -11,11 +11,11 @@ tools:
         config:
             level: all
     php_code_sniffer: true
-    sensiolabs_security_checker: true
+    sensiolabs_security_checker: false
     php_code_coverage:
-        test_command: phpunit -c phpunit.xml.dist
+        test_command: phpunit
+        config_path: null
     php_cpd: true
     php_loc: true
-    php_pdepend:
-        excluded_dirs: [vendor]
+    php_pdepend: true
     external_code_coverage: false
