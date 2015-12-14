@@ -2,7 +2,6 @@
 
 namespace BCC\EnumerableUtility\Tests\Enumerable;
 
-use BCC\EnumerableUtility\String;
 use BCC\EnumerableUtility\Stringer;
 use InvalidArgumentException;
 
@@ -147,9 +146,9 @@ class StringerTest extends EnumerableTestBase
 
     public function testFormat()
     {
-        $this->assertEquals('Hello world!', String::format('%s %s!', 'Hello', 'world'));
+        $this->assertEquals('Hello world!', Stringer::format('%s %s!', 'Hello', 'world'));
 
-        $this->assertEquals('Thé et café', String::format('%s et %s', 'Thé', 'café'));
+        $this->assertEquals('Thé et café', Stringer::format('%s et %s', 'Thé', 'café'));
     }
 
     public function testIndexOf()
@@ -178,23 +177,23 @@ class StringerTest extends EnumerableTestBase
 
     public function testIsNullOrEmpty()
     {
-        $this->assertTrue(String::isNullOrEmpty(''));
-        $this->assertTrue(String::isNullOrEmpty(null));
-        $this->assertFalse(String::isNullOrEmpty(' '));
+        $this->assertTrue(Stringer::isNullOrEmpty(''));
+        $this->assertTrue(Stringer::isNullOrEmpty(null));
+        $this->assertFalse(Stringer::isNullOrEmpty(' '));
     }
 
     public function testIsNullOrWhiteSpace()
     {
-        $this->assertTrue(String::isNullOrWhiteSpace(''));
-        $this->assertTrue(String::isNullOrWhiteSpace(null));
-        $this->assertTrue(String::isNullOrWhiteSpace(' '));
+        $this->assertTrue(Stringer::isNullOrWhiteSpace(''));
+        $this->assertTrue(Stringer::isNullOrWhiteSpace(null));
+        $this->assertTrue(Stringer::isNullOrWhiteSpace(' '));
     }
 
     public function testConcatenate()
     {
-        $this->assertEquals('Hello world!', String::concatenate(' ', array('Hello', 'world!')));
+        $this->assertEquals('Hello world!', Stringer::concatenate(' ', array('Hello', 'world!')));
 
-        $this->assertEquals('Thé café', String::concatenate(' ', array('Thé', 'café')));
+        $this->assertEquals('Thé café', Stringer::concatenate(' ', array('Thé', 'café')));
     }
 
     public function testLastIndexOf()
