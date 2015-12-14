@@ -7,7 +7,7 @@
 
 The enumerable utility library provides an easy way to manipulate collections. This library contains:
 
-- A `String` class that uses `Enumerable` and adds more wonderful methods
+- A `Stringer` class that uses `Enumerable` and adds more wonderful methods
 - A `Collection` class that helps you rapidly leverage the `Enumerable`
 - A `Dictionary` class that is an indexed `Collection`
 - A `StringUtility` class if you don't like the idea of a `String` class
@@ -156,9 +156,9 @@ Behind being an enumerable, `Dictionary` has some useful functions:
 - remove: removes the item at the given key
 - tryGetValue: tries to get the value at the given key
 
-## The `String` class
+## The `Stringer` class
 
-The `String` class is also an `Enumerable` (understand enumerable of char), but it also adds some usefull methods.
+The `Stringer` class is also an `Enumerable` (understand enumerable of char), but it also adds some usefull methods.
 
 These are inspired from the String class of the .NET framework:
 
@@ -191,11 +191,28 @@ You can now do:
 ``` php
 <?php
 
-use BCC\EnumerableUtility\String;
+use BCC\EnumerableUtility\Stringer;
 
-$string = new String('Hello world!');
+$string = new Stringer('Hello world!');
 
 $string = $string->replace('world', 'pineapple')       // replace world by pineapple
+       ->toUpper()                                     // to upper case
+       ->skip(6)                                       // skip the 6 first letters
+       ->takeWhile(function($char) { $char != '!'; }); // take the rest while the char is different from '!'
+
+echo $string; // PINEAPPLE
+
+```
+
+Or use static methods:
+
+``` php
+<?php
+
+use BCC\EnumerableUtility\Stringer;
+
+$string = Stringer::create('Hello world!')
+       ->replace('world', 'pineapple')                 // replace world by pineapple
        ->toUpper()                                     // to upper case
        ->skip(6)                                       // skip the 6 first letters
        ->takeWhile(function($char) { $char != '!'; }); // take the rest while the char is different from '!'
