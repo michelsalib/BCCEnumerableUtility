@@ -187,7 +187,7 @@ class Stringer extends Enumerable
     {
         $args = array_slice(func_get_args(), 1);
 
-        return new String(vsprintf((string)$string, $args));
+        return Stringer::create(vsprintf((string)$string, $args));
     }
 
     /**
@@ -219,7 +219,7 @@ class Stringer extends Enumerable
         $before = substr($this->string, 0, $startIndex);
         $after  = substr($this->string, $startIndex);
 
-        return new String($before.$value.$after);
+        return Stringer::create($before.$value.$after);
     }
 
     /**
@@ -250,7 +250,7 @@ class Stringer extends Enumerable
      */
     public static function concatenate($separator, array $strings)
     {
-        return new String(implode((string)$separator, $strings));
+        return Stringer::create(implode((string)$separator, $strings));
     }
 
     /**
@@ -279,7 +279,7 @@ class Stringer extends Enumerable
      */
     public function padLeft($totalWidth, $paddingChar = ' ')
     {
-        return new String(str_pad($this->string, strlen($this->string)- mb_strlen($this->string) + $totalWidth, $paddingChar, STR_PAD_LEFT));
+        return Stringer::create(str_pad($this->string, strlen($this->string)- mb_strlen($this->string) + $totalWidth, $paddingChar, STR_PAD_LEFT));
     }
 
     /**
@@ -290,7 +290,7 @@ class Stringer extends Enumerable
      */
     public function padRight($totalWidth, $paddingChar = ' ')
     {
-        return new String(str_pad($this->string, strlen($this->string)- mb_strlen($this->string) + $totalWidth, $paddingChar, STR_PAD_RIGHT));
+        return Stringer::create(str_pad($this->string, strlen($this->string)- mb_strlen($this->string) + $totalWidth, $paddingChar, STR_PAD_RIGHT));
     }
 
     /**
@@ -304,12 +304,12 @@ class Stringer extends Enumerable
         $first = mb_substr($this->string, 0, $startIndex);
 
         if ($count === null) {
-            return new String($first);
+            return Stringer::create($first);
         }
 
         $second = mb_substr($this->string, $startIndex + $count);
 
-        return new String($first.$second);
+        return Stringer::create($first.$second);
     }
 
     /**
@@ -322,10 +322,10 @@ class Stringer extends Enumerable
     public function replace($old, $new, $ignoreCase = false)
     {
         if ($ignoreCase) {
-            return new String(str_ireplace((string)$old, (string)$new, $this->string));
+            return Stringer::create(str_ireplace((string)$old, (string)$new, $this->string));
         }
         else {
-            return new String(str_replace((string)$old, (string)$new, $this->string));
+            return Stringer::create(str_replace((string)$old, (string)$new, $this->string));
         }
     }
 
@@ -348,10 +348,10 @@ class Stringer extends Enumerable
     public function subString($startIndex, $length = null)
     {
         if ($length === null) {
-            return new String(mb_substr($this->string, (string)$startIndex));
+            return Stringer::create(mb_substr($this->string, (string)$startIndex));
         }
 
-        return new String(mb_substr($this->string, (string)$startIndex, $length));
+        return Stringer::create(mb_substr($this->string, (string)$startIndex, $length));
     }
 
     /**
@@ -359,7 +359,7 @@ class Stringer extends Enumerable
      */
     public function toLower()
     {
-        return new String(mb_strtolower($this->string));
+        return Stringer::create(mb_strtolower($this->string));
     }
 
     /**
@@ -367,7 +367,7 @@ class Stringer extends Enumerable
      */
     public function toUpper()
     {
-        return new String(mb_strtoupper($this->string));
+        return Stringer::create(mb_strtoupper($this->string));
     }
 
     /**
@@ -381,41 +381,41 @@ class Stringer extends Enumerable
     /**
      * @param string $trimChars
      *
-     * @return String
+     * @return Stringer
      */
     public function trim($trimChars = null)
     {
         if ($trimChars === null) {
-            return new String(trim($this->string));
+            return Stringer::create(trim($this->string));
         }
 
-        return new String(trim($this->string, $trimChars));
+        return Stringer::create(trim($this->string, $trimChars));
     }
 
     /**
      * @param string $trimChars
-     * @return String
+     * @return Stringer
      */
     public function trimEnd($trimChars = null)
     {
         if ($trimChars === null) {
-            return new String(rtrim($this->string));
+            return Stringer::create(rtrim($this->string));
         }
 
-        return new String(rtrim($this->string, $trimChars));
+        return Stringer::create(rtrim($this->string, $trimChars));
     }
 
     /**
      * @param string $trimChars
      *
-     * @return String
+     * @return Stringer
      */
     public function trimStart($trimChars = null)
     {
         if ($trimChars === null) {
-            return new String(ltrim($this->string));
+            return Stringer::create(ltrim($this->string));
         }
 
-        return new String(ltrim($this->string, $trimChars));
+        return Stringer::create(ltrim($this->string, $trimChars));
     }
 }

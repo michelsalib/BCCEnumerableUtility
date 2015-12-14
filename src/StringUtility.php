@@ -15,7 +15,7 @@ class StringUtility
             $result = $method->invokeArgs(new Stringer($arguments[0]), \array_slice($arguments, 1));
         }
 
-        if ($result instanceof String) {
+        if ($result instanceof Stringer) {
             return (string) $result;
         }
 
