@@ -18,6 +18,6 @@ class StringUtilityTest extends \PHPUnit_Framework_TestCase
 
     public function testNonStringReturn()
     {
-        $this->assertNotInstanceOf('\BCC\EnumerableUtility\String', StringUtility::trim(' Hello world! '));
+        $this->assertNotInstanceOf('\BCC\EnumerableUtility\Stringer', StringUtility::trim(' Hello world! '));
     }
 }

@@ -413,7 +413,7 @@ class StringerTest extends EnumerableTestBase
 
         $result = \call_user_func_array(array($string, $function), \array_slice(\func_get_args(), 1));
 
-        $this->assertInstanceOf('\BCC\EnumerableUtility\String', $result);
+        $this->assertInstanceOf('\BCC\EnumerableUtility\Stringer', $result);
     }
 
     public function stringReturnFunctions()
