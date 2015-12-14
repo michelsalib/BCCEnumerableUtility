@@ -1,6 +1,6 @@
 <?php
 
-namespace BCC\EnumerableUtilityUtility\Tests\Enumerable;
+namespace BCC\EnumerableUtility\Tests\Enumerable;
 
 use BCC\EnumerableUtility\Collection;
 

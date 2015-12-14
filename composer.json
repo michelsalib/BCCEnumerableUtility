@@ -22,6 +22,6 @@
         "phpunit/phpunit": "*"
     },
     "autoload": {
-        "psr-0": { "BCC\\EnumerableUtility": "src/" }
+        "psr-4": { "BCC\\EnumerableUtility\\": "src/" }
     }
 }

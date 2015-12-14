@@ -1,6 +1,6 @@
 <?php
 
-namespace BCC\EnumerableUtilityUtility\Tests\Resolver;
+namespace BCC\EnumerableUtility\Tests\Resolver;
 
 use BCC\EnumerableUtility\Resolver\ExpressionResolver;
 
