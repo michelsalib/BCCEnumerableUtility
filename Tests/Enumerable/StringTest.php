@@ -1,11 +1,9 @@
 <?php
 
-namespace BCC\EnumerableUtilityUtility\Tests\Enumerable;
+namespace BCC\EnumerableUtility\Tests\Enumerable;
 
 use BCC\EnumerableUtility\String;
 use InvalidArgumentException;
-
-include_once('EnumerableTestBase.php');
 
 class StringTest extends EnumerableTestBase
 {

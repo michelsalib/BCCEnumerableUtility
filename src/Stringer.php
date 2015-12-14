@@ -24,7 +24,7 @@ class Stringer extends Enumerable
         if (is_array($string)) {
             $this->string = implode($string);
         }
-        else if ($string instanceof String) {
+        else if ($string instanceof Stringer) {
             $this->string = $string->string;
         }
         else if (is_string($string)) {

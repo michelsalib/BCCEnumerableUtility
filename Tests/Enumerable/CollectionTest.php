@@ -1,10 +1,8 @@
 <?php
 
-namespace BCC\EnumerableUtilityUtility\Tests\Enumerable;
+namespace BCC\EnumerableUtility\Tests\Enumerable;
 
 use BCC\EnumerableUtility\Collection;
-
-include_once('EnumerableTestBase.php');
 
 class CollectionTest extends EnumerableTestBase
 {

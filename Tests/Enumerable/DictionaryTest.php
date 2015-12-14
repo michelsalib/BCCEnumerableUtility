@@ -1,6 +1,6 @@
 <?php
 
-namespace BCC\EnumerableUtilityUtility\Tests\Enumerable;
+namespace BCC\EnumerableUtility\Tests\Enumerable;
 
 use Closure;
 use BCC\EnumerableUtility\Dictionary;
@@ -8,8 +8,6 @@ use BCC\EnumerableUtility\Grouping;
 use BCC\EnumerableUtility\KeyValuePair;
 use BCC\EnumerableUtility\Collection;
 use BCC\EnumerableUtility\Tests\Fixtures\Object;
-
-include_once('EnumerableTestBase.php');
 
 class DictionaryTest extends EnumerableTestBase
 {
